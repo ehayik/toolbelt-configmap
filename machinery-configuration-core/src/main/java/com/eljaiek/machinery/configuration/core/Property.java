@@ -19,12 +19,14 @@ public interface Property {
 
   Optional<String> value();
 
+  boolean isNumeric();
+
   default int asInt() {
     return map(Integer::parseInt).orElse(0);
   }
 
   default <T> Optional<T> map(@NonNull Function<String, T> as) {
-    return value().map(as);
+    return value().filter(x -> !x.isBlank()).map(as);
   }
 
   default long asLong() {
@@ -36,6 +38,11 @@ public interface Property {
   }
 
   default boolean asBoolean() {
+
+    if (isNumeric()) {
+      return value().filter(x -> !x.equals("0") && !x.equals("0.0")).isPresent();
+    }
+
     return map(Boolean::parseBoolean).orElse(false);
   }
 
@@ -52,6 +59,9 @@ public interface Property {
   }
 
   default List<String> asList(@NonNull Supplier<String> splitBy) {
-    return value().map(val -> List.of(splitBy.get())).orElseGet(List::of);
+    return value()
+        .filter(x -> !x.isBlank())
+        .map(val -> List.of(val.split(splitBy.get())))
+        .orElseGet(List::of);
   }
 }

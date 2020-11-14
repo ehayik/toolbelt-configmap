@@ -1,21 +1,22 @@
 package com.eljaiek.machinery.configuration.core;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+
+import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer.Alphanumeric;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
-import java.util.Map;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 @TestMethodOrder(Alphanumeric.class)
-class MutablePropertyFactoryTest {
+class ImmutablePropertyFactoryTests {
 
   PropertyFactory propertyFactory;
 
   @BeforeEach
   void setUp() {
-    propertyFactory = new MutablePropertyFactory(x -> {}, x -> {});
+    propertyFactory = new ImmutablePropertyFactory(x -> {}, x -> {});
   }
 
   @Test
@@ -61,8 +62,8 @@ class MutablePropertyFactoryTest {
 
     // Then
     assertThat(actual)
-            .isNotNull()
-            .hasFieldOrPropertyWithValue("key", "mail.smtp.host")
-            .hasFieldOrPropertyWithValue("value", "smtp.mailtrap.io");
+        .isNotNull()
+        .hasFieldOrPropertyWithValue("key", "mail.smtp.host")
+        .hasFieldOrPropertyWithValue("value", "smtp.mailtrap.io");
   }
 }

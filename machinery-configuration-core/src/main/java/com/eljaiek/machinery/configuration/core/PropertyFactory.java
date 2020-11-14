@@ -1,8 +1,7 @@
 package com.eljaiek.machinery.configuration.core;
 
-import lombok.NonNull;
-
 import java.util.Map;
+import lombok.NonNull;
 
 public interface PropertyFactory {
 
