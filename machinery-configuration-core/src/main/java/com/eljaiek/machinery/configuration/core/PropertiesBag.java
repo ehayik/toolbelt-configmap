@@ -6,7 +6,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.Supplier;
+import java.util.stream.Stream;
 import lombok.NonNull;
 import org.eclipse.collections.impl.collector.Collectors2;
 
@@ -16,58 +16,110 @@ public interface PropertiesBag {
 
   Property put(String key, String value);
 
+  Property get(String key);
+
   boolean isEmpty();
+
+  int size();
 
   void save();
 
-  void delete(String key);
+  Optional<Property> remove(String key);
 
   void clear();
 
   void flush();
 
-  void forEach(Consumer<Property> propertyConsumer);
+  Stream<Property> stream();
 
-  default <T> Optional<T> getValue(String key, @NonNull Function<String, T> as) {
-    return get(key).map(p -> p.map(as)).orElseThrow();
+  default void forEach(@NonNull Consumer<Property> propertyConsumer) {
+    stream().forEach(propertyConsumer);
+  }
+
+  default <T> Optional<T> getValueAs(String key, @NonNull Function<String, T> as) {
+    return Optional.ofNullable(get(key)).flatMap(p -> p.map(as));
   }
 
   default Set<Property> getAll(@NonNull Set<String> keys) {
-    return keys.stream()
-        .map(this::get)
-        .map(x -> x.orElse(null))
-        .filter(Objects::nonNull)
-        .collect(Collectors2.toSet());
+    return keys.stream().map(this::get).filter(Objects::nonNull).collect(Collectors2.toSet());
   }
 
-  Optional<Property> get(String key);
-
   default Optional<String> getValue(String key) {
-    return get(key).flatMap(Property::value);
+    var property = get(key);
+
+    if (property == null) {
+      return Optional.empty();
+    }
+
+    return get(key).value();
+  }
+
+  default String getValueAsText(String key) {
+    var property = get(key);
+
+    if (property == null) {
+      return "";
+    }
+
+    return get(key).asText();
   }
 
   default int getValueAsInt(String key) {
-    return get(key).map(Property::asInt).orElseThrow();
+    var property = get(key);
+
+    if (property == null) {
+      return 0;
+    }
+
+    return get(key).asInt();
   }
 
   default float getValueAsFloat(String key) {
-    return get(key).map(Property::asFloat).orElseThrow();
+    var property = get(key);
+
+    if (property == null) {
+      return 0.0F;
+    }
+
+    return get(key).asFloat();
   }
 
   default long getValueAsLong(String key) {
-    return get(key).map(Property::asLong).orElseThrow();
+    var property = get(key);
+
+    if (property == null) {
+      return 0L;
+    }
+    return get(key).asLong();
   }
 
   default List<String> getValueAsList(String key) {
-    return get(key).map(Property::asList).orElseGet(List::of);
+    var property = get(key);
+
+    if (property == null) {
+      return List.of();
+    }
+
+    return get(key).asList();
   }
 
-  default List<String> getValueAsList(String key, @NonNull Supplier<String> splitBy) {
-    return get(key).map(p -> p.asList(splitBy)).orElseGet(List::of);
+  default List<String> getValueAsList(String key, @NonNull String splitRegex) {
+    var property = get(key);
+
+    if (property == null) {
+      return List.of();
+    }
+
+    return get(key).asList(splitRegex);
   }
 
-  default <T> List<T> asList(
-      String key, Function<String, T> as, @NonNull Supplier<String> splitBy) {
-    return get(key).map(p -> p.asList(as, splitBy)).orElseGet(List::of);
+  default <T> List<T> asList(String key, Function<String, T> as, @NonNull String splitRegex) {
+    var property = get(key);
+
+    if (property == null) {
+      return List.of();
+    }
+
+    return get(key).asList(as, splitRegex);
   }
 }

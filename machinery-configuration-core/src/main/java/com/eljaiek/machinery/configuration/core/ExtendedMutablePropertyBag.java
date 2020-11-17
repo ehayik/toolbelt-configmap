@@ -3,6 +3,7 @@ package com.eljaiek.machinery.configuration.core;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 import lombok.NonNull;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
@@ -11,7 +12,7 @@ public final class ExtendedMutablePropertyBag implements PropertiesBag {
   private final PropertiesBag delegate;
   private final Set<String> changedKeys;
   private final Consumer<Set<Property>> saveBatch;
-  private final Runnable deleteBatch;
+  private final Runnable removeBatch;
 
   public ExtendedMutablePropertyBag(PropertiesBag delegate, Consumer<Set<Property>> saveBatch) {
     this(delegate, saveBatch, delegate::clear);
@@ -20,10 +21,10 @@ public final class ExtendedMutablePropertyBag implements PropertiesBag {
   public ExtendedMutablePropertyBag(
       @NonNull PropertiesBag delegate,
       @NonNull Consumer<Set<Property>> saveBatch,
-      @NonNull Runnable deleteBatch) {
+      @NonNull Runnable removeBatch) {
     this.delegate = delegate;
     this.saveBatch = saveBatch;
-    this.deleteBatch = deleteBatch;
+    this.removeBatch = removeBatch;
     changedKeys = UnifiedSet.newSet();
   }
 
@@ -46,8 +47,13 @@ public final class ExtendedMutablePropertyBag implements PropertiesBag {
   }
 
   @Override
+  public int size() {
+    return delegate.size();
+  }
+
+  @Override
   public void clear() {
-    deleteBatch.run();
+    removeBatch.run();
     changedKeys.clear();
     delegate.flush();
   }
@@ -58,12 +64,17 @@ public final class ExtendedMutablePropertyBag implements PropertiesBag {
   }
 
   @Override
+  public Stream<Property> stream() {
+    return delegate.stream();
+  }
+
+  @Override
   public void forEach(Consumer<Property> consumer) {
     delegate.forEach(consumer);
   }
 
   @Override
-  public Optional<Property> get(String key) {
+  public Property get(String key) {
     return delegate.get(key);
   }
 
@@ -73,8 +84,8 @@ public final class ExtendedMutablePropertyBag implements PropertiesBag {
   }
 
   @Override
-  public void delete(String key) {
-    delegate.delete(key);
+  public Optional<Property> remove(String key) {
     changedKeys.removeIf(x -> x.equals(key));
+    return delegate.remove(key);
   }
 }

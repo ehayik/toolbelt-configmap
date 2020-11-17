@@ -18,11 +18,11 @@ public final class ImmutableProperty implements Property {
   private final String key;
   private final @With String value;
   private final Consumer<Property> save;
-  private final Consumer<String> deleteByKey;
+  private final Consumer<String> removeByKey;
 
   @Override
   public String key() {
-    return value;
+    return key;
   }
 
   @Override
@@ -41,7 +41,7 @@ public final class ImmutableProperty implements Property {
   }
 
   @Override
-  public void delete() {
-    deleteByKey.accept(key);
+  public void remove() {
+    removeByKey.accept(key);
   }
 }

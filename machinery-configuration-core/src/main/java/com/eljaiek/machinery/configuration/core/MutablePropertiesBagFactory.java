@@ -14,7 +14,7 @@ public final class MutablePropertiesBagFactory implements PropertiesBagFactory {
   private final PropertyFactory propertyFactory;
   private final Consumer<Set<Property>> saveBatch;
   private final Supplier<Set<Property>> findAllByNamespace;
-  private final Consumer<String> deleteAllByNameSpace;
+  private final Consumer<String> removeAllByNameSpace;
 
   @Override
   public PropertiesBag create() {
@@ -28,20 +28,16 @@ public final class MutablePropertiesBagFactory implements PropertiesBagFactory {
       throw new IllegalArgumentException("namespace cannot be null or blank");
     }
 
-    var bag =
-        new ExtendedMutablePropertyBag(
-            new MutablePropertiesBag(propertyFactory),
-            saveBatch,
-            () -> deleteAllByNameSpace.accept(namespace));
-    findAllByNamespace.get().forEach(bag::put);
-    return bag;
+    return new ExtendedMutablePropertyBag(
+        new MutablePropertiesBag(findAllByNamespace, propertyFactory),
+        saveBatch,
+        () -> removeAllByNameSpace.accept(namespace));
   }
 
   @Override
   public PropertiesBag create(@NonNull Set<Property> properties) {
-    var bag = create();
-    properties.forEach(bag::put);
-    return bag;
+    return new ExtendedMutablePropertyBag(
+        new MutablePropertiesBag(properties, propertyFactory), saveBatch);
   }
 
   @Override

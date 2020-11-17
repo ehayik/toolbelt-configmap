@@ -2,8 +2,11 @@ package com.eljaiek.machinery.configuration.core;
 
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Consumer;
+import java.util.Set;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
 import lombok.NonNull;
+import org.eclipse.collections.impl.collector.Collectors2;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 
 public final class MutablePropertiesBag implements PropertiesBag {
@@ -15,8 +18,22 @@ public final class MutablePropertiesBag implements PropertiesBag {
     this(UnifiedMap.newMap(), propertyFactory);
   }
 
-  public MutablePropertiesBag(@NonNull Map<String, Property> bag, PropertyFactory propertyFactory) {
-    this.bag = bag;
+  MutablePropertiesBag(@NonNull Map<String, String> properties, PropertyFactory propertyFactory) {
+    this.bag =
+        properties.entrySet().stream()
+            .collect(Collectors2.toMap(Map.Entry::getKey, propertyFactory::create));
+    this.propertyFactory = propertyFactory;
+  }
+
+  public MutablePropertiesBag(
+      @NonNull Supplier<Set<Property>> propertiesSupplier,
+      @NonNull PropertyFactory propertyFactory) {
+    this(propertiesSupplier.get(), propertyFactory);
+  }
+
+  public MutablePropertiesBag(
+      @NonNull Set<Property> properties, @NonNull PropertyFactory propertyFactory) {
+    this.bag = properties.stream().collect(Collectors2.toMap(Property::key, p -> p));
     this.propertyFactory = propertyFactory;
   }
 
@@ -33,6 +50,11 @@ public final class MutablePropertiesBag implements PropertiesBag {
   }
 
   @Override
+  public int size() {
+    return bag.size();
+  }
+
+  @Override
   public boolean isEmpty() {
     return bag.isEmpty();
   }
@@ -43,14 +65,20 @@ public final class MutablePropertiesBag implements PropertiesBag {
   }
 
   @Override
-  public void delete(String key) {
-    get(key).ifPresent(Property::delete);
-    bag.remove(key);
+  public Optional<Property> remove(String key) {
+    var property = bag.remove(key);
+
+    if (property == null) {
+      return Optional.empty();
+    }
+
+    property.remove();
+    return Optional.of(property);
   }
 
   @Override
   public void clear() {
-    bag.values().forEach(Property::delete);
+    bag.values().forEach(Property::remove);
     flush();
   }
 
@@ -60,12 +88,12 @@ public final class MutablePropertiesBag implements PropertiesBag {
   }
 
   @Override
-  public void forEach(@NonNull Consumer<Property> consumer) {
-    bag.values().forEach(consumer);
+  public Stream<Property> stream() {
+    return bag.values().stream();
   }
 
   @Override
-  public Optional<Property> get(String key) {
-    return Optional.ofNullable(bag.get(key));
+  public Property get(String key) {
+    return bag.get(key);
   }
 }

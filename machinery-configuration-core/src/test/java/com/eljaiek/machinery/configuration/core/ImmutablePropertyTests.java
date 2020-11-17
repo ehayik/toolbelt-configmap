@@ -6,15 +6,38 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 import org.eclipse.collections.impl.collector.Collectors2;
-import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.MethodOrderer.Alphanumeric;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-@TestMethodOrder(MethodOrderer.Alphanumeric.class)
+@TestMethodOrder(Alphanumeric.class)
 class ImmutablePropertyTests {
+
+  public static final String KEY = "time.unit";
+  public static final String VALUE = DAYS.toString();
+
+  @Test
+  void asTextShouldNotReturnEmpty() {
+    // Given
+    var property = new ImmutableProperty("email.sender", "jhon.doe@domain.com", x -> {}, x -> {});
+
+    // Then
+    assertThat(property.asText()).isEqualTo("jhon.doe@domain.com");
+  }
+
+  @ParameterizedTest
+  @NullAndEmptySource
+  @ValueSource(strings = " ")
+  void asTextShouldReturnEmptyString(String value) {
+    // Given
+    var property = new ImmutableProperty("email.sender", value, x -> {}, x -> {});
+
+    // Then
+    assertThat(property.asText()).isEmpty();
+  }
 
   @Test
   void asIntShouldNotReturnZero() {
@@ -121,7 +144,7 @@ class ImmutablePropertyTests {
   @Test
   void mapShouldNotReturnEmpty() {
     // Given
-    var property = new ImmutableProperty("time.unit", DAYS.toString(), x -> {}, x -> {});
+    var property = new ImmutableProperty(KEY, VALUE, x -> {}, x -> {});
 
     // Then
     assertThat(property.map(TimeUnit::valueOf)).isPresent().get().isEqualTo(DAYS);
@@ -132,7 +155,7 @@ class ImmutablePropertyTests {
   @ValueSource(strings = " ")
   void mapShouldReturnEmpty(String value) {
     // Given
-    var property = new ImmutableProperty("time.unit", value, x -> {}, x -> {});
+    var property = new ImmutableProperty(KEY, value, x -> {}, x -> {});
 
     // Then
     assertThat(property.map(TimeUnit::valueOf)).isEmpty();
@@ -143,7 +166,7 @@ class ImmutablePropertyTests {
     // Given
     var timeUnits = TimeUnit.values();
     var value = Stream.of(timeUnits).map(TimeUnit::toString).collect(Collectors2.makeString(" "));
-    var property = new ImmutableProperty("time.unit", value, x -> {}, x -> {});
+    var property = new ImmutableProperty(KEY, value, x -> {}, x -> {});
 
     // Then
     assertThat(property.asList(TimeUnit::valueOf)).contains(timeUnits);
@@ -152,7 +175,7 @@ class ImmutablePropertyTests {
   @Test
   void asListShouldReturnListWithOnlyOneElement() {
     // Given
-    var property = new ImmutableProperty("time.unit", DAYS.toString(), x -> {}, x -> {});
+    var property = new ImmutableProperty(KEY, VALUE, x -> {}, x -> {});
 
     // Then
     assertThat(property.asList(TimeUnit::valueOf)).hasSize(1);
@@ -163,9 +186,20 @@ class ImmutablePropertyTests {
   @ValueSource(strings = "  ")
   void asListShouldReturnEmptyList(String value) {
     // Given
-    var property = new ImmutableProperty("time.unit", value, x -> {}, x -> {});
+    var property = new ImmutableProperty(KEY, value, x -> {}, x -> {});
 
     // Then
     assertThat(property.asList(String::toUpperCase)).isEmpty();
+  }
+
+  @Test
+  void asListShouldReturnNotReturnEmptyListUsingCustomSplitSeparator() {
+    // Given
+    var timeUnits = TimeUnit.values();
+    var value = Stream.of(timeUnits).map(TimeUnit::toString).collect(Collectors2.makeString(","));
+    var property = new ImmutableProperty(KEY, value, x -> {}, x -> {});
+
+    // Then
+    assertThat(property.asList(TimeUnit::valueOf, ",")).contains(timeUnits);
   }
 }

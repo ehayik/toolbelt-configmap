@@ -20,7 +20,7 @@ class ImmutablePropertyFactoryTests {
   }
 
   @Test
-  void create() {
+  void createShouldReturnProperty() {
     // When
     var actual = propertyFactory.create("mail.smtp.host", "smtp.mailtrap.io");
 
