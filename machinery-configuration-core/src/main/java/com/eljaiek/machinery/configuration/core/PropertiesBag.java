@@ -113,7 +113,17 @@ public interface PropertiesBag {
     return get(key).asList(splitRegex);
   }
 
-  default <T> List<T> asList(String key, Function<String, T> as, @NonNull String splitRegex) {
+  default <T> List<T> getValueAsList(String key, @NonNull Function<String, T> as) {
+    var property = get(key);
+
+    if (property == null) {
+      return List.of();
+    }
+
+    return get(key).asList(as);
+  }
+
+  default <T> List<T> getValueAsList(String key, Function<String, T> as, @NonNull String splitRegex) {
     var property = get(key);
 
     if (property == null) {
