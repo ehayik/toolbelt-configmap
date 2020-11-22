@@ -1,24 +1,25 @@
 package com.eljaiek.machinery.configuration.core;
 
-import java.util.Map;
-import java.util.Set;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.eclipse.collections.impl.collector.Collectors2;
+
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 @RequiredArgsConstructor
 public final class MutablePropertiesBagFactory implements PropertiesBagFactory {
 
   private final PropertyFactory propertyFactory;
   private final Consumer<Set<Property>> saveBatch;
-  private final Supplier<Set<Property>> findAllByNamespace;
-  private final Consumer<String> deleteAllByNameSpace;
+  private final Function<String, Set<Property>> findAllByNamespace;
+  private final Consumer<String> removeAllByNameSpace;
 
   @Override
   public PropertiesBag create() {
-    return new ExtendedMutablePropertyBag(new MutablePropertiesBag(propertyFactory), saveBatch);
+    return new ExtendedMutablePropertiesBag(new MutablePropertiesBag(propertyFactory), saveBatch);
   }
 
   @Override
@@ -28,20 +29,15 @@ public final class MutablePropertiesBagFactory implements PropertiesBagFactory {
       throw new IllegalArgumentException("namespace cannot be null or blank");
     }
 
-    var bag =
-        new ExtendedMutablePropertyBag(
-            new MutablePropertiesBag(propertyFactory),
-            saveBatch,
-            () -> deleteAllByNameSpace.accept(namespace));
-    findAllByNamespace.get().forEach(bag::put);
-    return bag;
+    var delegate = new MutablePropertiesBag(findAllByNamespace.apply(namespace), propertyFactory);
+    return new ExtendedMutablePropertiesBag(
+        delegate, saveBatch, () -> removeAllByNameSpace.accept(namespace));
   }
 
   @Override
   public PropertiesBag create(@NonNull Set<Property> properties) {
-    var bag = create();
-    properties.forEach(bag::put);
-    return bag;
+    return new ExtendedMutablePropertiesBag(
+        new MutablePropertiesBag(properties, propertyFactory), saveBatch);
   }
 
   @Override

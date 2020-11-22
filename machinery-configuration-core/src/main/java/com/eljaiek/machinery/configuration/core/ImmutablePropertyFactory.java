@@ -6,10 +6,10 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public final class MutablePropertyFactory implements PropertyFactory {
+public final class ImmutablePropertyFactory implements PropertyFactory {
 
   private final Consumer<Property> save;
-  private final Consumer<String> deleteByKey;
+  private final Consumer<String> removeByKey;
 
   @Override
   public Property create(@NonNull Map.Entry<String, String> entry) {
@@ -23,6 +23,6 @@ public final class MutablePropertyFactory implements PropertyFactory {
       throw new IllegalArgumentException("key cannot be null or blank.");
     }
 
-    return new MutableProperty(key, value, save, deleteByKey);
+    return new ImmutableProperty(key, value, save, removeByKey);
   }
 }

@@ -37,8 +37,22 @@
             <artifactId>junit-jupiter</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.reflection-utils</groupId>
+            <artifactId>reflection-utils</artifactId>
+            <version>0.0.1</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>

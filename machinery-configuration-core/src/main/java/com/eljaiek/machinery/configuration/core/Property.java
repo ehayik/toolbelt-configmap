@@ -5,7 +5,6 @@ import static java.util.stream.Collectors.toList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
-import java.util.function.Supplier;
 import lombok.NonNull;
 import org.eclipse.collections.impl.collector.Collectors2;
 
@@ -15,16 +14,22 @@ public interface Property {
 
   void save();
 
-  void delete();
+  void remove();
 
   Optional<String> value();
+
+  boolean isNumeric();
+
+  default String asText() {
+    return value().filter(x -> !x.isBlank()).orElse("");
+  }
 
   default int asInt() {
     return map(Integer::parseInt).orElse(0);
   }
 
   default <T> Optional<T> map(@NonNull Function<String, T> as) {
-    return value().map(as);
+    return value().filter(x -> !x.isBlank()).map(as);
   }
 
   default long asLong() {
@@ -36,6 +41,11 @@ public interface Property {
   }
 
   default boolean asBoolean() {
+
+    if (isNumeric()) {
+      return value().filter(x -> !x.equals("0") && !x.equals("0.0")).isPresent();
+    }
+
     return map(Boolean::parseBoolean).orElse(false);
   }
 
@@ -44,14 +54,17 @@ public interface Property {
   }
 
   default List<String> asList() {
-    return asList(() -> " ");
+    return asList(" ");
   }
 
-  default <T> List<T> asList(@NonNull Function<String, T> as, @NonNull Supplier<String> splitBy) {
-    return asList(splitBy).stream().map(as).collect(Collectors2.toList());
+  default <T> List<T> asList(@NonNull Function<String, T> as, @NonNull String splitRegex) {
+    return asList(splitRegex).stream().map(as).collect(Collectors2.toList());
   }
 
-  default List<String> asList(@NonNull Supplier<String> splitBy) {
-    return value().map(val -> List.of(splitBy.get())).orElseGet(List::of);
+  default List<String> asList(@NonNull String splitRegex) {
+    return value()
+        .filter(x -> !x.isBlank())
+        .map(val -> List.of(val.split(splitRegex)))
+        .orElseGet(List::of);
   }
 }
