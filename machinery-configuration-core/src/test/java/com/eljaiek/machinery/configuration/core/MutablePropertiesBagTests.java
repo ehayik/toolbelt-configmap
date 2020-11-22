@@ -1,6 +1,5 @@
 package com.eljaiek.machinery.configuration.core;
 
-import org.eclipse.collections.impl.collector.Collectors2;
 import org.junit.jupiter.api.MethodOrderer.Alphanumeric;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
@@ -9,12 +8,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import static java.util.concurrent.TimeUnit.DAYS;
@@ -117,8 +114,7 @@ class MutablePropertiesBagTests {
   void forEachShouldIterateProperties() {
     // Given
     var values = new LinkedList<String>();
-    Supplier<Set<Property>> propertiesSupplier = () -> Set.of(property);
-    var propertiesBag = new MutablePropertiesBag(propertiesSupplier, propertyFactory);
+    var propertiesBag = new MutablePropertiesBag(Set.of(property), propertyFactory);
 
     // When
     when(property.asText()).thenReturn(value);

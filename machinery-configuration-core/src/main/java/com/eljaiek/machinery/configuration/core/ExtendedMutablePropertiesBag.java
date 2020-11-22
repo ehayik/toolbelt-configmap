@@ -9,18 +9,18 @@ import java.util.stream.Stream;
 import lombok.NonNull;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
-public final class ExtendedMutablePropertyBag implements PropertiesBag {
+public final class ExtendedMutablePropertiesBag implements PropertiesBag {
 
   private final PropertiesBag delegate;
   private final Set<String> transientPropertyKeys;
   private final Consumer<Set<Property>> saveBatch;
   private final Runnable removeBatch;
 
-  public ExtendedMutablePropertyBag(PropertiesBag delegate, Consumer<Set<Property>> saveBatch) {
+  public ExtendedMutablePropertiesBag(PropertiesBag delegate, Consumer<Set<Property>> saveBatch) {
     this(delegate, saveBatch, delegate::clear);
   }
 
-  public ExtendedMutablePropertyBag(
+  public ExtendedMutablePropertiesBag(
       @NonNull PropertiesBag delegate,
       @NonNull Consumer<Set<Property>> saveBatch,
       @NonNull Runnable removeBatch) {

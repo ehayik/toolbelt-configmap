@@ -2,7 +2,7 @@ package com.eljaiek.machinery.configuration.core;
 
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.MethodOrderer.Alphanumeric;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,13 +16,12 @@ import java.util.function.Consumer;
 
 import static java.util.concurrent.TimeUnit.DAYS;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-@TestMethodOrder(MethodOrderer.Alphanumeric.class)
-class ExtendedMutablePropertyBagTests {
+@TestMethodOrder(Alphanumeric.class)
+class ExtendedMutablePropertiesBagTests {
 
   final String key = "time.unit";
   final String value = DAYS.toString();
@@ -30,11 +29,11 @@ class ExtendedMutablePropertyBagTests {
   @Mock Property property;
   @Mock Consumer<Set<Property>> saveBatch;
   @Mock PropertiesBag delegateBag;
-  ExtendedMutablePropertyBag propertyBag;
+  ExtendedMutablePropertiesBag propertyBag;
 
   @BeforeEach
   void setUp() {
-    propertyBag = new ExtendedMutablePropertyBag(delegateBag, saveBatch);
+    propertyBag = new ExtendedMutablePropertiesBag(delegateBag, saveBatch);
   }
 
   @Test
