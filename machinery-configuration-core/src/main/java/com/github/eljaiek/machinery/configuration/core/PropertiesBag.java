@@ -1,4 +1,4 @@
-package com.eljaiek.machinery.configuration.core;
+package com.github.eljaiek.machinery.configuration.core;
 
 import java.util.List;
 import java.util.Objects;
@@ -123,7 +123,8 @@ public interface PropertiesBag {
     return get(key).asList(as);
   }
 
-  default <T> List<T> getValueAsList(String key, Function<String, T> as, @NonNull String splitRegex) {
+  default <T> List<T> getValueAsList(
+      String key, Function<String, T> as, @NonNull String splitRegex) {
     var property = get(key);
 
     if (property == null) {

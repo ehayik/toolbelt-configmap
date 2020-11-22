@@ -1,13 +1,12 @@
-package com.eljaiek.machinery.configuration.core;
-
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-import org.eclipse.collections.impl.collector.Collectors2;
+package com.github.eljaiek.machinery.configuration.core;
 
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import org.eclipse.collections.impl.collector.Collectors2;
 
 @RequiredArgsConstructor
 public final class MutablePropertiesBagFactory implements PropertiesBagFactory {

@@ -1,13 +1,12 @@
-package com.eljaiek.machinery.configuration.core;
-
-import lombok.NonNull;
-import org.eclipse.collections.impl.collector.Collectors2;
-import org.eclipse.collections.impl.map.mutable.UnifiedMap;
+package com.github.eljaiek.machinery.configuration.core;
 
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
+import lombok.NonNull;
+import org.eclipse.collections.impl.collector.Collectors2;
+import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 
 public final class MutablePropertiesBag implements PropertiesBag {
 

@@ -1,4 +1,4 @@
-package com.eljaiek.machinery.configuration.core;
+package com.github.eljaiek.machinery.configuration.core;
 
 import java.util.List;
 import java.util.Optional;
@@ -119,7 +119,8 @@ public final class ExtendedMutablePropertiesBag implements PropertiesBag {
   }
 
   @Override
-  public <T> List<T> getValueAsList(String key, Function<String, T> as, @NonNull String splitRegex) {
+  public <T> List<T> getValueAsList(
+      String key, Function<String, T> as, @NonNull String splitRegex) {
     return delegate.getValueAsList(key, as, splitRegex);
   }
 

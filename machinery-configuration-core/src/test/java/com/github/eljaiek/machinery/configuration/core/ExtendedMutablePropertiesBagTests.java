@@ -1,5 +1,13 @@
-package com.eljaiek.machinery.configuration.core;
+package com.github.eljaiek.machinery.configuration.core;
 
+import static java.util.concurrent.TimeUnit.DAYS;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.Consumer;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer.Alphanumeric;
@@ -9,15 +17,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import refutils.ReflectionHelper;
-
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.Consumer;
-
-import static java.util.concurrent.TimeUnit.DAYS;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @TestMethodOrder(Alphanumeric.class)

@@ -1,5 +1,13 @@
-package com.eljaiek.machinery.configuration.core;
+package com.github.eljaiek.machinery.configuration.core;
 
+import static java.util.concurrent.TimeUnit.DAYS;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+
+import java.util.Map;
+import java.util.Set;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.api.InstanceOfAssertFactory;
 import org.assertj.core.api.ObjectAssert;
@@ -14,15 +22,6 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Map;
-import java.util.Set;
-
-import static java.util.concurrent.TimeUnit.DAYS;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-
 @ExtendWith(MockitoExtension.class)
 @TestMethodOrder(MethodOrderer.Alphanumeric.class)
 class MutablePropertiesBagFactoryTests {
@@ -30,13 +29,16 @@ class MutablePropertiesBagFactoryTests {
   @Mock Property property;
   MutablePropertiesBagFactory factory;
   @Mock PropertyFactory propertyFactory;
-  InstanceOfAssertFactory<PropertiesBag, ObjectAssert<PropertiesBag>> mutablePropertiesBagAssertFactory;
+  InstanceOfAssertFactory<PropertiesBag, ObjectAssert<PropertiesBag>>
+      mutablePropertiesBagAssertFactory;
 
   @BeforeEach
-  @SuppressWarnings({ "rawtypes", "unchecked" })
+  @SuppressWarnings({"rawtypes", "unchecked"})
   void setUp() {
-    factory = new MutablePropertiesBagFactory(propertyFactory, x -> {}, x -> Set.of(property), x -> {});
-    mutablePropertiesBagAssertFactory = new InstanceOfAssertFactory(PropertiesBag.class, Assertions::assertThat);
+    factory =
+        new MutablePropertiesBagFactory(propertyFactory, x -> {}, x -> Set.of(property), x -> {});
+    mutablePropertiesBagAssertFactory =
+        new InstanceOfAssertFactory(PropertiesBag.class, Assertions::assertThat);
   }
 
   @Test
@@ -46,9 +48,9 @@ class MutablePropertiesBagFactoryTests {
 
     // Then
     assertThat(propertiesBag)
-            .isInstanceOf(ExtendedMutablePropertiesBag.class)
-            .extracting("delegate", mutablePropertiesBagAssertFactory)
-            .isInstanceOf(MutablePropertiesBag.class);
+        .isInstanceOf(ExtendedMutablePropertiesBag.class)
+        .extracting("delegate", mutablePropertiesBagAssertFactory)
+        .isInstanceOf(MutablePropertiesBag.class);
     assertThat(propertiesBag.isEmpty()).isTrue();
   }
 
@@ -60,9 +62,9 @@ class MutablePropertiesBagFactoryTests {
 
     // Then
     assertThat(propertiesBag)
-            .isInstanceOf(ExtendedMutablePropertiesBag.class)
-            .extracting("delegate", mutablePropertiesBagAssertFactory)
-            .isInstanceOf(MutablePropertiesBag.class);
+        .isInstanceOf(ExtendedMutablePropertiesBag.class)
+        .extracting("delegate", mutablePropertiesBagAssertFactory)
+        .isInstanceOf(MutablePropertiesBag.class);
     assertThat(propertiesBag.isEmpty()).isFalse();
   }
 
@@ -72,8 +74,8 @@ class MutablePropertiesBagFactoryTests {
   void createShouldThrowIllegalArgumentExceptionWhenNamespaceIsBlank(String namespace) {
     // Then
     assertThatIllegalArgumentException()
-            .isThrownBy(() -> factory.create(namespace))
-            .withMessage("namespace cannot be null or blank");
+        .isThrownBy(() -> factory.create(namespace))
+        .withMessage("namespace cannot be null or blank");
   }
 
   @Test
@@ -84,9 +86,9 @@ class MutablePropertiesBagFactoryTests {
 
     // Then
     assertThat(propertiesBag)
-            .isInstanceOf(ExtendedMutablePropertiesBag.class)
-            .extracting("delegate", mutablePropertiesBagAssertFactory)
-            .isInstanceOf(MutablePropertiesBag.class);
+        .isInstanceOf(ExtendedMutablePropertiesBag.class)
+        .extracting("delegate", mutablePropertiesBagAssertFactory)
+        .isInstanceOf(MutablePropertiesBag.class);
     assertThat(propertiesBag.isEmpty()).isFalse();
   }
 
@@ -99,9 +101,9 @@ class MutablePropertiesBagFactoryTests {
 
     // Then
     assertThat(propertiesBag)
-            .isInstanceOf(ExtendedMutablePropertiesBag.class)
-            .extracting("delegate", mutablePropertiesBagAssertFactory)
-            .isInstanceOf(MutablePropertiesBag.class);
+        .isInstanceOf(ExtendedMutablePropertiesBag.class)
+        .extracting("delegate", mutablePropertiesBagAssertFactory)
+        .isInstanceOf(MutablePropertiesBag.class);
     assertThat(propertiesBag.isEmpty()).isFalse();
   }
 }

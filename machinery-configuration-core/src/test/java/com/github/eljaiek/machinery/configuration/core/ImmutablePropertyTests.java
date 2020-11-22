@@ -1,4 +1,4 @@
-package com.eljaiek.machinery.configuration.core;
+package com.github.eljaiek.machinery.configuration.core;
 
 import static java.util.concurrent.TimeUnit.DAYS;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -6,8 +6,6 @@ import static org.eclipse.collections.impl.collector.Collectors2.makeString;
 
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
-import org.eclipse.collections.impl.collector.Collectors2;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer.Alphanumeric;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;

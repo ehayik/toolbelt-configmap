@@ -1,4 +1,4 @@
-package com.eljaiek.machinery.configuration.core;
+package com.github.eljaiek.machinery.configuration.core;
 
 import static java.util.stream.Collectors.toList;
 
