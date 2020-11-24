@@ -27,6 +27,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class MutablePropertiesBagFactoryTests {
 
   @Mock Property property;
+  @Mock
+  PropertyRepository propertyRepository;
   MutablePropertiesBagFactory factory;
   @Mock PropertyFactory propertyFactory;
   InstanceOfAssertFactory<PropertiesBag, ObjectAssert<PropertiesBag>>
@@ -36,7 +38,7 @@ class MutablePropertiesBagFactoryTests {
   @SuppressWarnings({"rawtypes", "unchecked"})
   void setUp() {
     factory =
-        new MutablePropertiesBagFactory(propertyFactory, x -> {}, x -> Set.of(property), x -> {});
+        new MutablePropertiesBagFactory(propertyRepository, propertyFactory);
     mutablePropertiesBagAssertFactory =
         new InstanceOfAssertFactory(PropertiesBag.class, Assertions::assertThat);
   }
@@ -58,6 +60,7 @@ class MutablePropertiesBagFactoryTests {
   void createShouldReturnPropertiesBagWithFetchedPropertiesByNamespace() {
     // When
     when(property.key()).thenReturn("time.unit");
+    when(propertyRepository.getAll("time")).thenReturn(Set.of(property));
     PropertiesBag propertiesBag = factory.create("time");
 
     // Then

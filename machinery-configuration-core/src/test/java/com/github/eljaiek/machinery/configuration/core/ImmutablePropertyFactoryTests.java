@@ -8,15 +8,21 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer.Alphanumeric;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+@ExtendWith(MockitoExtension.class)
 @TestMethodOrder(Alphanumeric.class)
 class ImmutablePropertyFactoryTests {
 
   PropertyFactory propertyFactory;
+  @Mock
+  PropertyRepository propertyRepository;
 
   @BeforeEach
   void setUp() {
-    propertyFactory = new ImmutablePropertyFactory(x -> {}, x -> {});
+    propertyFactory = new ImmutablePropertyFactory(propertyRepository);
   }
 
   @Test

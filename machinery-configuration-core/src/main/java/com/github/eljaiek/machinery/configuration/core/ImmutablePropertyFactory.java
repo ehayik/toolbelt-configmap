@@ -1,15 +1,14 @@
 package com.github.eljaiek.machinery.configuration.core;
 
-import java.util.Map;
-import java.util.function.Consumer;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+
+import java.util.Map;
 
 @RequiredArgsConstructor
 public final class ImmutablePropertyFactory implements PropertyFactory {
 
-  private final Consumer<Property> save;
-  private final Consumer<String> removeByKey;
+  private final PropertyRepository propertyRepository;
 
   @Override
   public Property create(@NonNull Map.Entry<String, String> entry) {
@@ -23,6 +22,6 @@ public final class ImmutablePropertyFactory implements PropertyFactory {
       throw new IllegalArgumentException("key cannot be null or blank.");
     }
 
-    return new ImmutableProperty(key, value, save, removeByKey);
+    return new ImmutableProperty(key, value, propertyRepository::put, propertyRepository::remove);
   }
 }
