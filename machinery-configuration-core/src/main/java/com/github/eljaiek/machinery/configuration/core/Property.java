@@ -20,6 +20,24 @@ public interface Property {
 
   boolean isNumeric();
 
+  /**
+   * If a value is not present, returns {@code true}, otherwise {@code false}.
+   *
+   * @return {@code true} if a value is not present, otherwise {@code false}
+   */
+  default boolean isEmpty() {
+    return value().isEmpty();
+  }
+
+  /**
+   * If a value is present, returns {@code true}, otherwise {@code false}.
+   *
+   * @return {@code true} if a value is present, otherwise {@code false}
+   */
+  default boolean isPresent() {
+    return value().isPresent();
+  }
+
   default String asText() {
     return value().filter(x -> !x.isBlank()).orElse("");
   }
