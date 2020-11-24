@@ -1,11 +1,10 @@
 package com.github.eljaiek.machinery.configuration.core;
 
+import java.util.Map;
+import java.util.Set;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.eclipse.collections.impl.collector.Collectors2;
-
-import java.util.Map;
-import java.util.Set;
 
 @RequiredArgsConstructor
 public final class MutablePropertiesBagFactory implements PropertiesBagFactory {
@@ -15,7 +14,8 @@ public final class MutablePropertiesBagFactory implements PropertiesBagFactory {
 
   @Override
   public PropertiesBag create() {
-    return new ExtendedMutablePropertiesBag(new MutablePropertiesBag(propertyFactory), propertyRepository::put);
+    return new ExtendedMutablePropertiesBag(
+        new MutablePropertiesBag(propertyFactory), propertyRepository::put);
   }
 
   @Override

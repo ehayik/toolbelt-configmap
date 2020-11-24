@@ -10,4 +10,6 @@ public interface PropertyFactory {
   }
 
   Property create(String key, String value);
+
+  Property create(String key);
 }

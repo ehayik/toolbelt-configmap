@@ -1,9 +1,9 @@
 package com.github.eljaiek.machinery.configuration.core;
 
+import java.util.Map;
+import java.util.function.Supplier;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-
-import java.util.Map;
 
 @RequiredArgsConstructor
 public final class ImmutablePropertyFactory implements PropertyFactory {
@@ -17,11 +17,21 @@ public final class ImmutablePropertyFactory implements PropertyFactory {
 
   @Override
   public Property create(String key, String value) {
+    return create(key, () -> value);
+  }
+
+  private Property create(String key, Supplier<String> value) {
 
     if (key == null || key.isBlank()) {
       throw new IllegalArgumentException("key cannot be null or blank.");
     }
 
-    return new ImmutableProperty(key, value, propertyRepository::put, propertyRepository::remove);
+    return new ImmutableProperty(
+        key, value.get(), propertyRepository::put, propertyRepository::remove);
+  }
+
+  @Override
+  public Property create(String key) {
+    return create(key, () -> propertyRepository.getValue(key));
   }
 }

@@ -2,6 +2,7 @@ package com.github.eljaiek.machinery.configuration.core;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.mockito.Mockito.when;
 
 import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,9 +17,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @TestMethodOrder(Alphanumeric.class)
 class ImmutablePropertyFactoryTests {
 
+  final String key = "mail.smtp.host";
+  final String value = "smtp.mailtrap.io";
+
   PropertyFactory propertyFactory;
-  @Mock
-  PropertyRepository propertyRepository;
+  @Mock PropertyRepository propertyRepository;
 
   @BeforeEach
   void setUp() {
@@ -28,13 +31,13 @@ class ImmutablePropertyFactoryTests {
   @Test
   void createShouldReturnProperty() {
     // When
-    var actual = propertyFactory.create("mail.smtp.host", "smtp.mailtrap.io");
+    var actual = propertyFactory.create(key, value);
 
     // Then
     assertThat(actual)
         .isNotNull()
-        .hasFieldOrPropertyWithValue("key", "mail.smtp.host")
-        .hasFieldOrPropertyWithValue("value", "smtp.mailtrap.io");
+        .hasFieldOrPropertyWithValue("key", key)
+        .hasFieldOrPropertyWithValue("value", value);
   }
 
   @Test
@@ -61,7 +64,7 @@ class ImmutablePropertyFactoryTests {
   @Test
   void createShouldConvertMapEntryToProperty() {
     // Given
-    var mapEntry = Map.of("mail.smtp.host", "smtp.mailtrap.io").entrySet().iterator().next();
+    var mapEntry = Map.of(key, value).entrySet().iterator().next();
 
     // When
     var actual = propertyFactory.create(mapEntry);
@@ -69,7 +72,17 @@ class ImmutablePropertyFactoryTests {
     // Then
     assertThat(actual)
         .isNotNull()
-        .hasFieldOrPropertyWithValue("key", "mail.smtp.host")
-        .hasFieldOrPropertyWithValue("value", "smtp.mailtrap.io");
+        .hasFieldOrPropertyWithValue("key", key)
+        .hasFieldOrPropertyWithValue("value", value);
+  }
+
+  @Test
+  void createShouldLoadValueFromRepository() {
+    // When
+    when(propertyRepository.getValue(key)).thenReturn(value);
+    var actual = propertyFactory.create(key);
+
+    // Then
+    assertThat(actual.value()).get().isEqualTo(value);
   }
 }

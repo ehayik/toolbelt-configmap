@@ -7,6 +7,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.api.InstanceOfAssertFactory;
@@ -27,8 +28,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class MutablePropertiesBagFactoryTests {
 
   @Mock Property property;
-  @Mock
-  PropertyRepository propertyRepository;
+  @Mock PropertyRepository propertyRepository;
   MutablePropertiesBagFactory factory;
   @Mock PropertyFactory propertyFactory;
   InstanceOfAssertFactory<PropertiesBag, ObjectAssert<PropertiesBag>>
@@ -37,8 +37,7 @@ class MutablePropertiesBagFactoryTests {
   @BeforeEach
   @SuppressWarnings({"rawtypes", "unchecked"})
   void setUp() {
-    factory =
-        new MutablePropertiesBagFactory(propertyRepository, propertyFactory);
+    factory = new MutablePropertiesBagFactory(propertyRepository, propertyFactory);
     mutablePropertiesBagAssertFactory =
         new InstanceOfAssertFactory(PropertiesBag.class, Assertions::assertThat);
   }
@@ -96,10 +95,11 @@ class MutablePropertiesBagFactoryTests {
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   void createShouldReturnPropertiesBagContainingGivenPropertiesMap() {
     // When
     when(property.key()).thenReturn("time.unit");
-    when(propertyFactory.create(any())).thenReturn(property);
+    when(propertyFactory.create(any(Entry.class))).thenReturn(property);
     PropertiesBag propertiesBag = factory.create(Map.of("time.unit", DAYS.toString()));
 
     // Then
