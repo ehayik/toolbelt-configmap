@@ -27,7 +27,10 @@ public final class ImmutablePropertyFactory implements PropertyFactory {
     }
 
     return new ImmutableProperty(
-        key, value.get(), propertyRepository::put, propertyRepository::remove);
+        key,
+        value.get(),
+        p -> propertyRepository.save(p.key(), p.asText()),
+        propertyRepository::remove);
   }
 
   @Override

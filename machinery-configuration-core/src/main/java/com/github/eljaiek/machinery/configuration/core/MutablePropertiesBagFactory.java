@@ -1,10 +1,13 @@
 package com.github.eljaiek.machinery.configuration.core;
 
+import static org.eclipse.collections.impl.collector.Collectors2.toMap;
+import static org.eclipse.collections.impl.collector.Collectors2.toSet;
+
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Consumer;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.eclipse.collections.impl.collector.Collectors2;
 
 @RequiredArgsConstructor
 public final class MutablePropertiesBagFactory implements PropertiesBagFactory {
@@ -14,8 +17,11 @@ public final class MutablePropertiesBagFactory implements PropertiesBagFactory {
 
   @Override
   public PropertiesBag create() {
-    return new ExtendedMutablePropertiesBag(
-        new MutablePropertiesBag(propertyFactory), propertyRepository::put);
+    return new ExtendedMutablePropertiesBag(new MutablePropertiesBag(propertyFactory), saveBatch());
+  }
+
+  private Consumer<Set<Property>> saveBatch() {
+    return x -> propertyRepository.save(x.stream().collect(toMap(Property::key, Property::asText)));
   }
 
   @Override
@@ -25,20 +31,20 @@ public final class MutablePropertiesBagFactory implements PropertiesBagFactory {
       throw new IllegalArgumentException("namespace cannot be null or blank");
     }
 
-    var delegate = new MutablePropertiesBag(propertyRepository.getAll(namespace), propertyFactory);
+    var delegate =
+        new MutablePropertiesBag(propertyRepository.findAllByNamespace(namespace), propertyFactory);
     return new ExtendedMutablePropertiesBag(
-        delegate, propertyRepository::put, () -> propertyRepository.removeAll(namespace));
+        delegate, saveBatch(), () -> propertyRepository.removeAllByNameSpace(namespace));
   }
 
   @Override
   public PropertiesBag create(@NonNull Set<Property> properties) {
     return new ExtendedMutablePropertiesBag(
-        new MutablePropertiesBag(properties, propertyFactory), propertyRepository::put);
+        new MutablePropertiesBag(properties, propertyFactory), saveBatch());
   }
 
   @Override
   public PropertiesBag create(Map<String, String> properties) {
-    return create(
-        properties.entrySet().stream().map(propertyFactory::create).collect(Collectors2.toSet()));
+    return create(properties.entrySet().stream().map(propertyFactory::create).collect(toSet()));
   }
 }

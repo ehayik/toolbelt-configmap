@@ -27,6 +27,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @TestMethodOrder(MethodOrderer.Alphanumeric.class)
 class MutablePropertiesBagFactoryTests {
 
+  String key = "time.unit";
+  String value = DAYS.toString();
+
   @Mock Property property;
   @Mock PropertyRepository propertyRepository;
   MutablePropertiesBagFactory factory;
@@ -56,10 +59,11 @@ class MutablePropertiesBagFactoryTests {
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   void createShouldReturnPropertiesBagWithFetchedPropertiesByNamespace() {
     // When
-    when(property.key()).thenReturn("time.unit");
-    when(propertyRepository.getAll("time")).thenReturn(Set.of(property));
+    when(propertyRepository.findAllByNamespace("time")).thenReturn(Map.of(key, value));
+    when(propertyFactory.create(any(Entry.class))).thenReturn(property);
     PropertiesBag propertiesBag = factory.create("time");
 
     // Then
@@ -83,7 +87,7 @@ class MutablePropertiesBagFactoryTests {
   @Test
   void createShouldReturnPropertiesBagContainingGivenPropertiesSet() {
     // When
-    when(property.key()).thenReturn("time.unit");
+    when(property.key()).thenReturn(key);
     PropertiesBag propertiesBag = factory.create(Set.of(property));
 
     // Then
@@ -98,9 +102,9 @@ class MutablePropertiesBagFactoryTests {
   @SuppressWarnings("unchecked")
   void createShouldReturnPropertiesBagContainingGivenPropertiesMap() {
     // When
-    when(property.key()).thenReturn("time.unit");
+    when(property.key()).thenReturn(key);
     when(propertyFactory.create(any(Entry.class))).thenReturn(property);
-    PropertiesBag propertiesBag = factory.create(Map.of("time.unit", DAYS.toString()));
+    PropertiesBag propertiesBag = factory.create(Map.of(key, value));
 
     // Then
     assertThat(propertiesBag)
