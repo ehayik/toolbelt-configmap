@@ -1,11 +1,12 @@
 package com.github.eljaiek.machinery.configuration.core;
 
+import static org.eclipse.collections.impl.collector.Collectors2.toMap;
+
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 import lombok.NonNull;
-import org.eclipse.collections.impl.collector.Collectors2;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 
 public final class MutablePropertiesBag implements PropertiesBag {
@@ -19,14 +20,13 @@ public final class MutablePropertiesBag implements PropertiesBag {
 
   MutablePropertiesBag(@NonNull Map<String, String> properties, PropertyFactory propertyFactory) {
     this.bag =
-        properties.entrySet().stream()
-            .collect(Collectors2.toMap(Map.Entry::getKey, propertyFactory::create));
+        properties.entrySet().stream().collect(toMap(Map.Entry::getKey, propertyFactory::create));
     this.propertyFactory = propertyFactory;
   }
 
   public MutablePropertiesBag(
       @NonNull Set<Property> properties, @NonNull PropertyFactory propertyFactory) {
-    this.bag = properties.stream().collect(Collectors2.toMap(Property::key, p -> p));
+    this.bag = properties.stream().collect(toMap(Property::key, p -> p));
     this.propertyFactory = propertyFactory;
   }
 

@@ -1,18 +1,18 @@
 package com.github.eljaiek.machinery.configuration.core;
 
-import java.util.Set;
+import java.util.Map;
 
 public interface PropertyRepository {
 
   String getValue(String key);
 
-  Set<Property> getAll(String key);
+  Map<String, String> findAllByNamespace(String namespace);
 
-  void put(Property property);
+  void save(String key, String value);
 
-  void put(Set<Property> properties);
+  void save(Map<String, String> properties);
 
   void remove(String key);
 
-  void removeAll(String key);
+  void removeAllByNameSpace(String namespace);
 }

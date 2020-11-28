@@ -24,6 +24,7 @@
 
     <modules>
         <module>machinery-configuration-core</module>
+        <module>machinery-configuration-repositories</module>
     </modules>
 
     <dependencies>
