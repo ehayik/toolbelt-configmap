@@ -11,6 +11,7 @@
     </parent>
 
     <artifactId>machinery-config-spring-boot-starter</artifactId>
+    <packaging>pom</packaging>
 
     <properties>
         <flatten.mode>oss</flatten.mode>
