@@ -25,6 +25,8 @@
     <modules>
         <module>machinery-config-core</module>
         <module>machinery-config-repositories</module>
+        <module>machinery-config-spring-boot-autoconfigure</module>
+        <module>machinery-config-spring-boot-starter</module>
     </modules>
 
     <dependencies>
