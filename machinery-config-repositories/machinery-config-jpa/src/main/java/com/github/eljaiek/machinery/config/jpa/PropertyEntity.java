@@ -22,7 +22,7 @@ import lombok.ToString;
 @AllArgsConstructor(access = PACKAGE)
 @EqualsAndHashCode(of = "key")
 @Table(name = "mch_properties")
-class PropertyEntity implements Serializable {
+public class PropertyEntity implements Serializable {
 
   @Id
   @Basic(optional = false)

@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
-final class JpaPropertyRepository implements PropertyRepository {
+public class JpaPropertyRepository implements PropertyRepository {
 
   private final PropertyEntityRepository delegate;
 
