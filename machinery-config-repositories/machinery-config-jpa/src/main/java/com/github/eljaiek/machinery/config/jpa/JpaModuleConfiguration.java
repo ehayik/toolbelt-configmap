@@ -12,7 +12,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @Configuration
 @ComponentScan
 @EnableJpaRepositories
-public class ConfigJpaModuleConfiguration {
+public class JpaModuleConfiguration {
 
   @Bean
   @ConditionalOnMissingBean
