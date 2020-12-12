@@ -5,7 +5,7 @@ import com.github.eljaiek.machinery.config.core.MutablePropertiesBagFactory;
 import com.github.eljaiek.machinery.config.core.PropertiesBagFactory;
 import com.github.eljaiek.machinery.config.core.PropertyFactory;
 import com.github.eljaiek.machinery.config.core.PropertyRepository;
-import com.github.eljaiek.machinery.config.jpa.ConfigJpaModuleConfiguration;
+import com.github.eljaiek.machinery.config.jpa.JpaModuleConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
@@ -29,7 +29,7 @@ class MachineryConfigAutoConfiguration {
   }
 
   @Configuration
-  @Import(ConfigJpaModuleConfiguration.class)
-  @ConditionalOnClass(name = "com.github.eljaiek.machinery.config.jpa.ConfigJpaModuleConfiguration")
-  static class EnableConfigJpaModule {}
+  @Import(JpaModuleConfiguration.class)
+  @ConditionalOnClass(name = "com.github.eljaiek.machinery.config.jpa.JpaModuleConfiguration")
+  static class EnableJpaModule {}
 }
