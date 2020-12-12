@@ -11,7 +11,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.ContextConfiguration;
 
 @DataJpaTest
-@ContextConfiguration(classes = JpaTestConfiguration.class)
+@ContextConfiguration(classes = JpaRepositoryConfiguration.class)
 class JpaPropertyRepositoryTest {
 
   String key = "mail.server.alias";
