@@ -5,14 +5,12 @@ import com.github.eljaiek.machinery.config.core.MutablePropertiesBagFactory;
 import com.github.eljaiek.machinery.config.core.PropertiesBagFactory;
 import com.github.eljaiek.machinery.config.core.PropertyFactory;
 import com.github.eljaiek.machinery.config.core.PropertyRepository;
-import com.github.eljaiek.machinery.config.jpa.JpaPropertyRepository;
-import com.github.eljaiek.machinery.config.jpa.PropertyEntityRepository;
+import com.github.eljaiek.machinery.config.jpa.ConfigJpaModuleConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.context.annotation.Import;
 
 @Configuration
 class MachineryConfigAutoConfiguration {
@@ -31,15 +29,7 @@ class MachineryConfigAutoConfiguration {
   }
 
   @Configuration
-  @EntityScan("com.github.eljaiek.machinery.config.jpa")
-  @EnableJpaRepositories("com.github.eljaiek.machinery.config.jpa")
-  @ConditionalOnClass(name = "com.github.eljaiek.machinery.config.jpa.JpaPropertyRepository")
-  static class EnableConfigJpa {
-
-    @Bean
-    @ConditionalOnMissingBean
-    PropertyRepository propertyRepository(PropertyEntityRepository propertyEntityRepository) {
-      return new JpaPropertyRepository(propertyEntityRepository);
-    }
-  }
+  @Import(ConfigJpaModuleConfiguration.class)
+  @ConditionalOnClass(name = "com.github.eljaiek.machinery.config.jpa.ConfigJpaModuleConfiguration")
+  static class EnableConfigJpaModule {}
 }
