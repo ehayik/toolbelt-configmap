@@ -59,14 +59,9 @@ public final class MutablePropertiesBag implements PropertiesBag {
 
   @Override
   public Optional<Property> remove(String key) {
-    var property = bag.remove(key);
-
-    if (property == null) {
-      return Optional.empty();
-    }
-
-    property.remove();
-    return Optional.of(property);
+    var property = Optional.ofNullable(bag.remove(key));
+    property.ifPresent(Property::remove);
+    return property;
   }
 
   @Override

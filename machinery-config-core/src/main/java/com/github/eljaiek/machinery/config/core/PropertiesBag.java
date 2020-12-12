@@ -1,5 +1,7 @@
 package com.github.eljaiek.machinery.config.core;
 
+import static java.util.Optional.ofNullable;
+
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -37,7 +39,7 @@ public interface PropertiesBag {
   }
 
   default <T> Optional<T> getValueAs(String key, @NonNull Function<String, T> as) {
-    return Optional.ofNullable(get(key)).flatMap(p -> p.map(as));
+    return ofNullable(get(key)).flatMap(p -> p.map(as));
   }
 
   default Set<Property> getAll(@NonNull Set<String> keys) {
@@ -45,92 +47,39 @@ public interface PropertiesBag {
   }
 
   default Optional<String> getValue(String key) {
-    var property = get(key);
-
-    if (property == null) {
-      return Optional.empty();
-    }
-
-    return get(key).value();
+    return ofNullable(get(key)).flatMap(Property::value);
   }
 
   default String getValueAsText(String key) {
-    var property = get(key);
-
-    if (property == null) {
-      return "";
-    }
-
-    return get(key).asText();
+    return ofNullable(get(key)).map(Property::asText).orElse("");
   }
 
   default int getValueAsInt(String key) {
-    var property = get(key);
-
-    if (property == null) {
-      return 0;
-    }
-
-    return get(key).asInt();
+    return ofNullable(get(key)).map(Property::asInt).orElse(0);
   }
 
   default float getValueAsFloat(String key) {
-    var property = get(key);
-
-    if (property == null) {
-      return 0.0F;
-    }
-
-    return get(key).asFloat();
+    return ofNullable(get(key)).map(Property::asFloat).orElse(0.0F);
   }
 
   default long getValueAsLong(String key) {
-    var property = get(key);
-
-    if (property == null) {
-      return 0L;
-    }
-    return get(key).asLong();
+    return ofNullable(get(key)).map(Property::asLong).orElse(0L);
   }
 
   default List<String> getValueAsList(String key) {
-    var property = get(key);
-
-    if (property == null) {
-      return List.of();
-    }
-
-    return get(key).asList();
+    return ofNullable(get(key)).map(Property::asList).orElse(List.of());
   }
 
   default List<String> getValueAsList(String key, @NonNull String splitRegex) {
-    var property = get(key);
-
-    if (property == null) {
-      return List.of();
-    }
-
-    return get(key).asList(splitRegex);
+    return ofNullable(get(key)).map(p -> p.asList(splitRegex)).orElse(List.of());
   }
 
   default <T> List<T> getValueAsList(String key, @NonNull Function<String, T> as) {
-    var property = get(key);
-
-    if (property == null) {
-      return List.of();
-    }
-
-    return get(key).asList(as);
+    return ofNullable(get(key)).map(p -> p.asList(as)).orElse(List.of());
   }
 
   default <T> List<T> getValueAsList(
       String key, Function<String, T> as, @NonNull String splitRegex) {
-    var property = get(key);
-
-    if (property == null) {
-      return List.of();
-    }
-
-    return get(key).asList(as, splitRegex);
+    return ofNullable(get(key)).map(p -> p.asList(as, splitRegex)).orElse(List.of());
   }
 }
