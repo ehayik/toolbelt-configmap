@@ -8,7 +8,7 @@ import org.springframework.data.redis.repository.configuration.EnableRedisReposi
 
 @Configuration
 @EnableRedisRepositories
-class RedisRepositoryConfiguration {
+class RedisModuleConfiguration {
 
   @Bean
   @ConditionalOnMissingBean
