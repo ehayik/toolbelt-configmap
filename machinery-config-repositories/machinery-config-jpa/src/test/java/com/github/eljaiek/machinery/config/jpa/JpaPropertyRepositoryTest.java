@@ -3,7 +3,6 @@ package com.github.eljaiek.machinery.config.jpa;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Map;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -20,11 +19,6 @@ class JpaPropertyRepositoryTest {
 
   @Autowired TestEntityManager entityManager;
   @Autowired JpaPropertyRepository propertyRepository;
-
-  @AfterEach
-  void tearDown() {
-    entityManager.clear();
-  }
 
   @Test
   void getValueShouldNotReturnEmpty() {
