@@ -8,10 +8,10 @@
 
     <properties>
         <revision>1.0-SNAPSHOT</revision>
-        <java.version>11</java.version>
+        <java.version>15</java.version>
         <flatten.mode>clean</flatten.mode>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
+        <maven.compiler.source>15</maven.compiler.source>
+        <maven.compiler.target>15</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <!--versions-->
@@ -119,7 +119,7 @@
 
     <dependencyManagement>
         <dependencies>
-           <!--boms-->
+           <!--bom-->
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
@@ -165,5 +165,4 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-
 </project>
