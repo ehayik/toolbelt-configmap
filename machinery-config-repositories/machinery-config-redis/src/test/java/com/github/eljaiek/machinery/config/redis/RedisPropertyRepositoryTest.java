@@ -5,7 +5,9 @@ import static org.springframework.test.annotation.DirtiesContext.ClassMode.BEFOR
 
 import java.util.Map;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
@@ -14,12 +16,13 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
 @DirtiesContext(classMode = BEFORE_CLASS)
+@TestMethodOrder(MethodOrderer.MethodName.class)
 @ContextConfiguration(classes = RedisModuleTestConfiguration.class)
 class RedisPropertyRepositoryTest {
 
-  String key = "mail.server.alias";
-  String value = "Administrator";
-  String namespace = "mail.server";
+  final String key = "mail.server.alias";
+  final String value = "Administrator";
+  final String namespace = "mail.server";
 
   @Autowired RedisPropertyRepository propertyRepository;
   @Autowired PropertyHashRepository propertyHashRepository;

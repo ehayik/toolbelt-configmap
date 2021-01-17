@@ -10,7 +10,7 @@ import java.util.Set;
 import java.util.function.Consumer;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.MethodOrderer.Alphanumeric;
+import org.junit.jupiter.api.MethodOrderer.MethodName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,7 +19,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import refutils.ReflectionHelper;
 
 @ExtendWith(MockitoExtension.class)
-@TestMethodOrder(Alphanumeric.class)
+@TestMethodOrder(MethodName.class)
 class ExtendedMutablePropertiesBagTests {
 
   final String key = "time.unit";

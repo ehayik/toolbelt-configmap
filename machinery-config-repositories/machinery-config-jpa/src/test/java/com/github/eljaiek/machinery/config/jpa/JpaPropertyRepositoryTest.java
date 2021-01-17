@@ -3,19 +3,22 @@ package com.github.eljaiek.machinery.config.jpa;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Map;
+import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.ContextConfiguration;
 
 @DataJpaTest
+@TestMethodOrder(MethodOrderer.MethodName.class)
 @ContextConfiguration(classes = JpaModuleConfiguration.class)
 class JpaPropertyRepositoryTest {
 
-  String key = "mail.server.alias";
-  String value = "Administrator";
-  String namespace = "mail.server";
+  final String key = "mail.server.alias";
+  final String value = "Administrator";
+  final String namespace = "mail.server";
 
   @Autowired TestEntityManager entityManager;
   @Autowired JpaPropertyRepository propertyRepository;

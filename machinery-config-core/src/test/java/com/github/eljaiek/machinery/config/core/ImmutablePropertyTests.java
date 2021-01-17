@@ -6,14 +6,14 @@ import static org.eclipse.collections.impl.collector.Collectors2.makeString;
 
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
-import org.junit.jupiter.api.MethodOrderer.Alphanumeric;
+import org.junit.jupiter.api.MethodOrderer.MethodName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-@TestMethodOrder(Alphanumeric.class)
+@TestMethodOrder(MethodName.class)
 class ImmutablePropertyTests {
 
   final String key = "time.unit";
