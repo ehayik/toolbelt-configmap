@@ -127,3 +127,5 @@ gradle-app.setting
 .classpath
 .project
 /.settings
+# Ignore Gradle build output directory
+build

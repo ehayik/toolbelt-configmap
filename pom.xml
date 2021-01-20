@@ -7,7 +7,7 @@
     <packaging>pom</packaging>
 
     <properties>
-        <revision>1.0-SNAPSHOT</revision>
+        <revision>0.0.1</revision>
         <java.version>15</java.version>
         <flatten.mode>clean</flatten.mode>
         <maven.compiler.source>15</maven.compiler.source>

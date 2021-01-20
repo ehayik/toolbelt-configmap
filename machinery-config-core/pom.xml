@@ -12,6 +12,8 @@
 
     <properties>
         <flatten.mode>oss</flatten.mode>
+         <asciidoctor.maven.plugin.version>1.5.3</asciidoctor.maven.plugin.version>
+        <asciidoctorj.diagram.version>1.5.0</asciidoctorj.diagram.version>
     </properties>
 
     <build>

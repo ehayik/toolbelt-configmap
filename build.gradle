@@ -1,0 +1,79 @@
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+}
+
+plugins {
+    id 'java-library'
+	id 'org.springframework.boot' version "${springBoot}"
+	id 'io.spring.dependency-management' version "${dependencyManagement}"
+}
+
+repositories {
+    jcenter()
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+allprojects {
+	group = 'com.github.eljaiek.machinery'
+	version = '0.0.1'
+    sourceCompatibility = '15'
+    targetCompatibility = '15'
+}
+
+subprojects {
+	apply plugin: 'java'    
+    apply plugin: 'java-library'
+    apply plugin: 'org.springframework.boot' 
+    apply plugin: 'io.spring.dependency-management'
+
+    repositories {
+        jcenter()
+    } 
+
+    dependencies {
+        compileOnly 'org.projectlombok:lombok'
+	    annotationProcessor 'org.projectlombok:lombok'
+	
+	    testCompileOnly 'org.projectlombok:lombok'
+	    testAnnotationProcessor 'org.projectlombok:lombok'
+        testImplementation(platform("org.junit:junit-bom:${junit}"))
+    }
+
+    test {
+        useJUnitPlatform()
+    }
+
+    bootJar {
+	    enabled = false
+    }
+
+    jar {
+	    enabled = true
+    }
+}
+
+file("machinery-config-repositories").eachDir {x ->
+    project(":${x.name}") {
+        dependencies {
+            implementation project(':machinery-config-core')
+            implementation "org.eclipse.collections:eclipse-collections:${eclipseCollectionsApi}"
+            implementation "org.eclipse.collections:eclipse-collections-api:${eclipseCollectionsApi}"
+
+            testImplementation 'org.junit.jupiter:junit-jupiter'
+            testImplementation "org.assertj:assertj-core:${assertjCore}"
+            testImplementation 'org.springframework.boot:spring-boot-starter-test'
+        }
+    }
+}
+
+bootJar {
+	enabled = false
+}

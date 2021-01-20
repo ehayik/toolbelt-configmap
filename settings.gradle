@@ -1,0 +1,16 @@
+
+rootProject.name = 'machinery-config'
+
+include 'machinery-config-core'
+include 'machinery-config-spring-boot-autoconfigure'
+include 'machinery-config-spring-boot-starter'
+
+/*
+* Includes every sub-project from machinery-config-repositories directory
+* rename them to be :machinery-config-jpa instead of 
+* machinery-config-repositories:machinery-config-jpa
+**/
+file("machinery-config-repositories").eachDir { x ->
+    include x.name
+    project(":${x.name}").projectDir = x
+}

@@ -27,3 +27,9 @@ jobs:
 
     - name: Verify with Maven
       run: ./mvnw -B verify --file pom.xml
+
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+
+    - name: Verify with Gradle
+      run: ./gradlew test
