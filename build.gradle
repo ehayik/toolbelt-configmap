@@ -9,12 +9,19 @@ plugins {
     id 'java-library'
 	id 'org.springframework.boot' version "${springBoot}"
 	id 'io.spring.dependency-management' version "${dependencyManagement}"
+    id 'com.github.sherter.google-java-format' version '0.9'
 }
 
 group = 'com.github.eljaiek.machinery'
 version = '0.0.1'
 sourceCompatibility = '15'
 targetCompatibility = '15'
+
+compileJava.dependsOn 'googleJavaFormat'
+
+googleJavaFormat {
+    exclude '.mvn/wrapper/MavenWrapperDownloader.java'
+}
 
 repositories {
     jcenter()
