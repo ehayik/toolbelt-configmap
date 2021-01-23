@@ -11,7 +11,7 @@ import lombok.With;
 @RequiredArgsConstructor
 @EqualsAndHashCode(of = "key")
 @ToString(of = {"key", "value"})
-public final class ImmutableProperty implements Property {
+public final class MutablePropertyImpl implements MutableProperty {
 
   private static final Pattern NUM_PATTERN = Pattern.compile("-?\\d+(\\.\\d+)?");
 

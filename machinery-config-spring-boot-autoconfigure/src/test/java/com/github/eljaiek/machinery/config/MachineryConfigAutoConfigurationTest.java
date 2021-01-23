@@ -2,10 +2,10 @@ package com.github.eljaiek.machinery.config;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.github.eljaiek.machinery.config.core.ImmutablePropertyFactory;
 import com.github.eljaiek.machinery.config.core.MutablePropertiesBagFactory;
-import com.github.eljaiek.machinery.config.core.PropertiesBagFactory;
-import com.github.eljaiek.machinery.config.core.PropertyFactory;
+import com.github.eljaiek.machinery.config.core.MutablePropertiesBagFactoryImpl;
+import com.github.eljaiek.machinery.config.core.MutablePropertyFactory;
+import com.github.eljaiek.machinery.config.core.MutablePropertyFactoryImpl;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
@@ -23,15 +23,15 @@ class MachineryConfigAutoConfigurationTest {
 
   @Test
   void propertiesBagFactoryShouldBePresentWhenContextIsBootstrapped() {
-    assertThat(applicationContext.getBean(PropertiesBagFactory.class))
+    assertThat(applicationContext.getBean(MutablePropertiesBagFactory.class))
         .isNotNull()
-        .isInstanceOf(MutablePropertiesBagFactory.class);
+        .isInstanceOf(MutablePropertiesBagFactoryImpl.class);
   }
 
   @Test
   void propertyFactoryShouldBePresentWhenContextIsBootstrapped() {
-    assertThat(applicationContext.getBean(PropertyFactory.class))
+    assertThat(applicationContext.getBean(MutablePropertyFactory.class))
         .isNotNull()
-        .isInstanceOf(ImmutablePropertyFactory.class);
+        .isInstanceOf(MutablePropertyFactoryImpl.class);
   }
 }

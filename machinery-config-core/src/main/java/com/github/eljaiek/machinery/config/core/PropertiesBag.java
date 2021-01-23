@@ -12,37 +12,29 @@ import java.util.stream.Stream;
 import lombok.NonNull;
 import org.eclipse.collections.impl.collector.Collectors2;
 
-public interface PropertiesBag {
+public interface PropertiesBag<T extends Property> {
 
-  void put(Property property);
+  void put(T property);
 
-  Property put(String key, String value);
+  T put(String key, String value);
 
-  Property get(String key);
+  T get(String key);
 
   boolean isEmpty();
 
   int size();
 
-  void save();
+  Stream<T> stream();
 
-  Optional<Property> remove(String key);
-
-  void clear();
-
-  void flush();
-
-  Stream<Property> stream();
-
-  default void forEach(@NonNull Consumer<Property> propertyConsumer) {
+  default void forEach(@NonNull Consumer<T> propertyConsumer) {
     stream().forEach(propertyConsumer);
   }
 
-  default <T> Optional<T> getValueAs(String key, @NonNull Function<String, T> as) {
+  default <S> Optional<S> getValueAs(String key, @NonNull Function<String, S> as) {
     return ofNullable(get(key)).flatMap(p -> p.map(as));
   }
 
-  default Set<Property> getAll(@NonNull Set<String> keys) {
+  default Set<T> getAll(@NonNull Set<String> keys) {
     return keys.stream().map(this::get).filter(Objects::nonNull).collect(Collectors2.toSet());
   }
 
@@ -74,12 +66,12 @@ public interface PropertiesBag {
     return ofNullable(get(key)).map(p -> p.asList(splitRegex)).orElse(List.of());
   }
 
-  default <T> List<T> getValueAsList(String key, @NonNull Function<String, T> as) {
+  default <S> List<S> getValueAsList(String key, @NonNull Function<String, S> as) {
     return ofNullable(get(key)).map(p -> p.asList(as)).orElse(List.of());
   }
 
-  default <T> List<T> getValueAsList(
-      String key, Function<String, T> as, @NonNull String splitRegex) {
+  default <S> List<S> getValueAsList(
+      String key, Function<String, S> as, @NonNull String splitRegex) {
     return ofNullable(get(key)).map(p -> p.asList(as, splitRegex)).orElse(List.of());
   }
 }

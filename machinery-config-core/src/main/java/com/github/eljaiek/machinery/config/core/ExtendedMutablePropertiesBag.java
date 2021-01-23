@@ -9,20 +9,21 @@ import java.util.stream.Stream;
 import lombok.NonNull;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
-public final class ExtendedMutablePropertiesBag implements PropertiesBag {
+public final class ExtendedMutablePropertiesBag implements MutablePropertiesBag {
 
-  private final PropertiesBag delegate;
+  private final MutablePropertiesBag delegate;
   private final Set<String> transientPropertyKeys;
-  private final Consumer<Set<Property>> saveBatch;
+  private final Consumer<Set<MutableProperty>> saveBatch;
   private final Runnable removeBatch;
 
-  public ExtendedMutablePropertiesBag(PropertiesBag delegate, Consumer<Set<Property>> saveBatch) {
+  public ExtendedMutablePropertiesBag(
+      MutablePropertiesBag delegate, Consumer<Set<MutableProperty>> saveBatch) {
     this(delegate, saveBatch, delegate::clear);
   }
 
   public ExtendedMutablePropertiesBag(
-      @NonNull PropertiesBag delegate,
-      @NonNull Consumer<Set<Property>> saveBatch,
+      @NonNull MutablePropertiesBag delegate,
+      @NonNull Consumer<Set<MutableProperty>> saveBatch,
       @NonNull Runnable removeBatch) {
     this.delegate = delegate;
     this.saveBatch = saveBatch;
@@ -39,13 +40,13 @@ public final class ExtendedMutablePropertiesBag implements PropertiesBag {
   }
 
   @Override
-  public void put(Property property) {
+  public void put(MutableProperty property) {
     delegate.put(property);
     transientPropertyKeys.add(property.key());
   }
 
   @Override
-  public Property put(String key, String value) {
+  public MutableProperty put(String key, String value) {
     var property = delegate.put(key, value);
     transientPropertyKeys.add(key);
     return property;
@@ -74,7 +75,7 @@ public final class ExtendedMutablePropertiesBag implements PropertiesBag {
   }
 
   @Override
-  public Set<Property> getAll(@NonNull Set<String> keys) {
+  public Set<MutableProperty> getAll(@NonNull Set<String> keys) {
     return delegate.getAll(keys);
   }
 
@@ -130,17 +131,17 @@ public final class ExtendedMutablePropertiesBag implements PropertiesBag {
   }
 
   @Override
-  public Stream<Property> stream() {
+  public Stream<MutableProperty> stream() {
     return delegate.stream();
   }
 
   @Override
-  public void forEach(Consumer<Property> consumer) {
+  public void forEach(Consumer<MutableProperty> consumer) {
     delegate.forEach(consumer);
   }
 
   @Override
-  public Property get(String key) {
+  public MutableProperty get(String key) {
     return delegate.get(key);
   }
 
@@ -150,7 +151,7 @@ public final class ExtendedMutablePropertiesBag implements PropertiesBag {
   }
 
   @Override
-  public Optional<Property> remove(String key) {
+  public Optional<MutableProperty> remove(String key) {
     transientPropertyKeys.removeIf(x -> x.equals(key));
     return delegate.remove(key);
   }

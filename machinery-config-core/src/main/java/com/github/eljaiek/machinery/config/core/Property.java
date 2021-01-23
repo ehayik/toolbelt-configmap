@@ -12,10 +12,6 @@ public interface Property {
 
   String key();
 
-  void save();
-
-  void remove();
-
   Optional<String> value();
 
   boolean isNumeric();

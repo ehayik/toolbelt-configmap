@@ -20,14 +20,14 @@ import refutils.ReflectionHelper;
 
 @ExtendWith(MockitoExtension.class)
 @TestMethodOrder(MethodName.class)
-class ExtendedMutablePropertiesBagTests {
+class ExtendedMutablePropertiesBagImplTests {
 
   final String key = "time.unit";
   final String value = DAYS.toString();
 
-  @Mock Property property;
-  @Mock Consumer<Set<Property>> saveBatch;
-  @Mock PropertiesBag delegateBag;
+  @Mock MutableProperty property;
+  @Mock Consumer<Set<MutableProperty>> saveBatch;
+  @Mock MutablePropertiesBag delegateBag;
   ExtendedMutablePropertiesBag propertyBag;
 
   @BeforeEach
@@ -51,14 +51,13 @@ class ExtendedMutablePropertiesBagTests {
   @SuppressWarnings("unchecked")
   void saveShouldCallSaveBatchConsumer() {
     // Given
-    Set<Property> properties = Set.of(this.property);
-    Set<String> transientPropertyKeys =
-        (Set<String>) new ReflectionHelper(propertyBag).getField(Set.class);
+    var properties = Set.of(property);
+    var transientPropertyKeys = (Set<String>) new ReflectionHelper(propertyBag).getField(Set.class);
 
     // When
     when(property.key()).thenReturn(key);
     when(delegateBag.getAll(transientPropertyKeys)).thenReturn(properties);
-    propertyBag.put(this.property);
+    propertyBag.put(property);
     propertyBag.save();
 
     // Then
