@@ -27,15 +27,8 @@
         <module>machinery-config-repositories</module>
         <module>machinery-config-spring-boot-autoconfigure</module>
         <module>machinery-config-spring-boot-starter</module>
+        <module>machinery-config-dependencies</module>
     </modules>
-
-    <dependencies>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <optional>true</optional>
-        </dependency>
-    </dependencies>
 
     <build>
         <plugins>

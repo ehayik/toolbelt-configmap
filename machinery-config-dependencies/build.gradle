@@ -1,0 +1,12 @@
+
+apply plugin: 'java-platform'
+
+dependencies {
+    constraints {
+        api project(':machinery-config-core')
+        api project(':machinery-config-jpa')
+        api project(':machinery-config-redis')
+        api project(':machinery-config-spring-boot-autoconfigure')
+        api project(':machinery-config-spring-boot-starter')
+    }
+}

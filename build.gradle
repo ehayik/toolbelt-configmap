@@ -1,12 +1,13 @@
 
 buildscript {
     repositories {
-        jcenter()
+        mavenCentral()
     }
 }
 
 plugins {
     id 'java-library'
+    id 'maven-publish'
 	id 'org.springframework.boot' version "${springBoot}"
 	id 'io.spring.dependency-management' version "${dependencyManagement}"
     id 'com.github.sherter.google-java-format' version '0.9'
@@ -24,7 +25,7 @@ googleJavaFormat {
 }
 
 repositories {
-    jcenter()
+    mavenCentral()
 }
 
 configurations {
@@ -34,33 +35,37 @@ configurations {
 }
 
 subprojects {
-    apply plugin: 'java-library'
-    apply plugin: 'org.springframework.boot'
-    apply plugin: 'io.spring.dependency-management'
 
     repositories {
-        jcenter()
-    } 
-
-    dependencies {
-        compileOnly 'org.projectlombok:lombok'
-	    annotationProcessor 'org.projectlombok:lombok'
-	
-	    testCompileOnly 'org.projectlombok:lombok'
-	    testAnnotationProcessor 'org.projectlombok:lombok'
-        testImplementation(platform("org.junit:junit-bom:${junit}"))
+        mavenCentral()
     }
 
-    test {
-        useJUnitPlatform()
-    }
+    if (it.name != 'machinery-config-dependencies') {
 
-    bootJar {
-	    enabled = false
-    }
+        apply plugin: 'java-library'
+        apply plugin: 'org.springframework.boot'
+        apply plugin: 'io.spring.dependency-management'
 
-    jar {
-	    enabled = true
+        dependencies {
+            compileOnly 'org.projectlombok:lombok'
+            annotationProcessor 'org.projectlombok:lombok'
+
+            testCompileOnly 'org.projectlombok:lombok'
+            testAnnotationProcessor 'org.projectlombok:lombok'
+            testImplementation(platform("org.junit:junit-bom:${junit}"))
+        }
+
+        test {
+            useJUnitPlatform()
+        }
+
+        bootJar {
+            enabled = false
+        }
+
+        jar {
+            enabled = true
+        }
     }
 }
 
