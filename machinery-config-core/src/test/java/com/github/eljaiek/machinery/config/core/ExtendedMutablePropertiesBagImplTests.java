@@ -16,7 +16,6 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import refutils.ReflectionHelper;
 
 @ExtendWith(MockitoExtension.class)
 @TestMethodOrder(MethodName.class)
@@ -52,16 +51,26 @@ class ExtendedMutablePropertiesBagImplTests {
   void saveShouldCallSaveBatchConsumer() {
     // Given
     var properties = Set.of(property);
-    var transientPropertyKeys = (Set<String>) new ReflectionHelper(propertyBag).getField(Set.class);
 
     // When
     when(property.key()).thenReturn(key);
-    when(delegateBag.getAll(transientPropertyKeys)).thenReturn(properties);
+    when(delegateBag.getAll(propertyBag.getTransientPropertyKeys())).thenReturn(properties);
     propertyBag.put(property);
     propertyBag.save();
 
     // Then
     verify(saveBatch).accept(properties);
+  }
+
+  @Test
+  @SneakyThrows
+  @SuppressWarnings("unchecked")
+  void newExtendedMutablePropertiesBagShouldContainsTransientPropertyKeys() {
+    // When
+    when(propertyBag.keys()).thenReturn(Set.of(key));
+
+    // Then
+    assertThat(propertyBag.isTransient(key)).isTrue();
   }
 
   @Test

@@ -1,54 +1,64 @@
 package com.github.eljaiek.machinery.config.core;
 
+import static lombok.AccessLevel.PACKAGE;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Stream;
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
+@AllArgsConstructor(access = PACKAGE)
 public final class ExtendedMutablePropertiesBag implements MutablePropertiesBag {
 
   private final MutablePropertiesBag delegate;
-  private final Set<String> transientPropertyKeys;
   private final Consumer<Set<MutableProperty>> saveBatch;
   private final Runnable removeBatch;
+  private Set<String> transientPropertyKeys;
 
   public ExtendedMutablePropertiesBag(
       MutablePropertiesBag delegate, Consumer<Set<MutableProperty>> saveBatch) {
-    this(delegate, saveBatch, delegate::clear);
+    this(delegate, saveBatch, delegate::clear, null);
   }
 
   public ExtendedMutablePropertiesBag(
       @NonNull MutablePropertiesBag delegate,
       @NonNull Consumer<Set<MutableProperty>> saveBatch,
       @NonNull Runnable removeBatch) {
-    this.delegate = delegate;
-    this.saveBatch = saveBatch;
-    this.removeBatch = removeBatch;
-    transientPropertyKeys = UnifiedSet.newSet();
+    this(delegate, saveBatch, removeBatch, UnifiedSet.newSet());
   }
 
   boolean isTransient(String propertyKey) {
-    return transientPropertyKeys.contains(propertyKey);
+    return getTransientPropertyKeys().contains(propertyKey);
+  }
+
+  Set<String> getTransientPropertyKeys() {
+
+    if (transientPropertyKeys == null) {
+      transientPropertyKeys = delegate.keys();
+    }
+
+    return transientPropertyKeys;
   }
 
   boolean hasTransientProperties() {
-    return !transientPropertyKeys.isEmpty();
+    return !getTransientPropertyKeys().isEmpty();
   }
 
   @Override
   public void put(MutableProperty property) {
     delegate.put(property);
-    transientPropertyKeys.add(property.key());
+    getTransientPropertyKeys().add(property.key());
   }
 
   @Override
   public MutableProperty put(String key, String value) {
     var property = delegate.put(key, value);
-    transientPropertyKeys.add(key);
+    getTransientPropertyKeys().add(key);
     return property;
   }
 
@@ -65,7 +75,7 @@ public final class ExtendedMutablePropertiesBag implements MutablePropertiesBag 
   @Override
   public void clear() {
     removeBatch.run();
-    transientPropertyKeys.clear();
+    getTransientPropertyKeys().clear();
     delegate.flush();
   }
 
@@ -136,6 +146,11 @@ public final class ExtendedMutablePropertiesBag implements MutablePropertiesBag 
   }
 
   @Override
+  public Set<String> keys() {
+    return delegate.keys();
+  }
+
+  @Override
   public void forEach(Consumer<MutableProperty> consumer) {
     delegate.forEach(consumer);
   }
@@ -147,12 +162,12 @@ public final class ExtendedMutablePropertiesBag implements MutablePropertiesBag 
 
   @Override
   public void save() {
-    saveBatch.accept(delegate.getAll(transientPropertyKeys));
+    saveBatch.accept(delegate.getAll(getTransientPropertyKeys()));
   }
 
   @Override
   public Optional<MutableProperty> remove(String key) {
-    transientPropertyKeys.removeIf(x -> x.equals(key));
+    getTransientPropertyKeys().removeIf(x -> x.equals(key));
     return delegate.remove(key);
   }
 }

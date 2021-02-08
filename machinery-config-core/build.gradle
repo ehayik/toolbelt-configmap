@@ -6,5 +6,4 @@ dependencies {
     testImplementation "org.mockito:mockito-core:${mockitoCore}"
     testImplementation "org.assertj:assertj-core:${assertjCore}"
     testImplementation "org.mockito:mockito-junit-jupiter:${mockitoCore}"
-    testImplementation'com.google.code.reflection-utils:reflection-utils:0.0.1'
 }

@@ -26,6 +26,10 @@ public interface PropertiesBag<T extends Property> {
 
   Stream<T> stream();
 
+  default Set<String> keys() {
+    return stream().map(Property::key).collect(Collectors2.toSet());
+  }
+
   default void forEach(@NonNull Consumer<T> propertyConsumer) {
     stream().forEach(propertyConsumer);
   }

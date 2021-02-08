@@ -84,6 +84,11 @@ public final class MutablePropertiesBagImpl implements MutablePropertiesBag {
   }
 
   @Override
+  public Set<String> keys() {
+    return bag.keySet();
+  }
+
+  @Override
   public MutableProperty get(String key) {
     return bag.get(key);
   }
