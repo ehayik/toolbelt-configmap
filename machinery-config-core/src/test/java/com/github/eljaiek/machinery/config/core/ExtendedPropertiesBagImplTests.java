@@ -19,19 +19,19 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 @TestMethodOrder(MethodName.class)
-class ExtendedMutablePropertiesBagImplTests {
+class ExtendedPropertiesBagImplTests {
 
   final String key = "time.unit";
   final String value = DAYS.toString();
 
-  @Mock MutableProperty property;
-  @Mock Consumer<Set<MutableProperty>> saveBatch;
-  @Mock MutablePropertiesBag delegateBag;
-  ExtendedMutablePropertiesBag propertyBag;
+  @Mock Property property;
+  @Mock Consumer<Set<Property>> saveBatch;
+  @Mock PropertiesBag delegateBag;
+  ExtendedPropertiesBag propertyBag;
 
   @BeforeEach
   void setUp() {
-    propertyBag = new ExtendedMutablePropertiesBag(delegateBag, saveBatch);
+    propertyBag = new ExtendedPropertiesBag(delegateBag, saveBatch);
   }
 
   @Test
@@ -47,8 +47,7 @@ class ExtendedMutablePropertiesBagImplTests {
 
   @Test
   @SneakyThrows
-  @SuppressWarnings("unchecked")
-  void saveShouldCallSaveBatchConsumer() {
+  void flushShouldCallSaveBatchConsumer() {
     // Given
     var properties = Set.of(property);
 
@@ -56,21 +55,10 @@ class ExtendedMutablePropertiesBagImplTests {
     when(property.key()).thenReturn(key);
     when(delegateBag.getAll(propertyBag.getTransientPropertyKeys())).thenReturn(properties);
     propertyBag.put(property);
-    propertyBag.save();
+    propertyBag.flush();
 
     // Then
     verify(saveBatch).accept(properties);
-  }
-
-  @Test
-  @SneakyThrows
-  @SuppressWarnings("unchecked")
-  void newExtendedMutablePropertiesBagShouldContainsTransientPropertyKeys() {
-    // When
-    when(propertyBag.keys()).thenReturn(Set.of(key));
-
-    // Then
-    assertThat(propertyBag.isTransient(key)).isTrue();
   }
 
   @Test
@@ -82,7 +70,6 @@ class ExtendedMutablePropertiesBagImplTests {
 
     // Then
     verify(delegateBag).clear();
-    verify(delegateBag).flush();
     assertThat(propertyBag.hasTransientProperties()).isFalse();
   }
 

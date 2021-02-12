@@ -1,6 +1,5 @@
 package com.github.eljaiek.machinery.config.redis;
 
-import static org.eclipse.collections.impl.collector.Collectors2.toList;
 import static org.eclipse.collections.impl.collector.Collectors2.toMap;
 import static org.eclipse.collections.impl.collector.Collectors2.toSet;
 
@@ -44,16 +43,5 @@ public class RedisPropertyRepository implements PropertyRepository {
             .map(x -> new PropertyHash(x.getKey(), x.getValue()))
             .collect(toSet());
     propertyHashRepository.saveAll(propertyHashes);
-  }
-
-  @Override
-  public void remove(String key) {
-    propertyHashRepository.deleteById(key);
-  }
-
-  @Override
-  public void removeAllByNameSpace(String namespace) {
-    var properties = filterAllByNamespace(namespace).collect(toList());
-    propertyHashRepository.deleteAll(properties);
   }
 }

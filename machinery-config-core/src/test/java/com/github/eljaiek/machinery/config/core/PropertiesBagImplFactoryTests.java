@@ -25,23 +25,23 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 @TestMethodOrder(MethodName.class)
-class MutablePropertiesBagImplFactoryTests {
+class PropertiesBagImplFactoryTests {
 
   final String key = "time.unit";
   final String value = DAYS.toString();
 
-  @Mock MutableProperty property;
+  @Mock Property property;
   @Mock PropertyRepository propertyRepository;
-  MutablePropertiesBagFactoryImpl factory;
-  @Mock MutablePropertyFactory mutablePropertyFactory;
+  PropertiesBagFactoryImpl factory;
+  @Mock PropertyFactory propertyFactory;
 
-  InstanceOfAssertFactory<MutablePropertiesBag, ObjectAssert<MutablePropertiesBag>>
+  InstanceOfAssertFactory<PropertiesBag, ObjectAssert<PropertiesBag>>
       mutablePropertiesBagAssertFactory;
 
   @BeforeEach
   @SuppressWarnings({"rawtypes", "unchecked"})
   void setUp() {
-    factory = new MutablePropertiesBagFactoryImpl(propertyRepository, mutablePropertyFactory);
+    factory = new PropertiesBagFactoryImpl(propertyRepository, propertyFactory);
     mutablePropertiesBagAssertFactory =
         new InstanceOfAssertFactory(PropertiesBag.class, Assertions::assertThat);
   }
@@ -53,9 +53,9 @@ class MutablePropertiesBagImplFactoryTests {
 
     // Then
     assertThat(propertiesBag)
-        .isInstanceOf(ExtendedMutablePropertiesBag.class)
+        .isInstanceOf(ExtendedPropertiesBag.class)
         .extracting("delegate", mutablePropertiesBagAssertFactory)
-        .isInstanceOf(MutablePropertiesBagImpl.class);
+        .isInstanceOf(PropertiesBagImpl.class);
     assertThat(propertiesBag.isEmpty()).isTrue();
   }
 
@@ -64,14 +64,14 @@ class MutablePropertiesBagImplFactoryTests {
   void createShouldReturnPropertiesBagWithFetchedPropertiesByNamespace() {
     // When
     when(propertyRepository.findAllByNamespace("time")).thenReturn(Map.of(key, value));
-    when(mutablePropertyFactory.create(any(Entry.class))).thenReturn(property);
+    when(propertyFactory.create(any(Entry.class))).thenReturn(property);
     var propertiesBag = factory.create("time");
 
     // Then
     assertThat(propertiesBag)
-        .isInstanceOf(ExtendedMutablePropertiesBag.class)
+        .isInstanceOf(ExtendedPropertiesBag.class)
         .extracting("delegate", mutablePropertiesBagAssertFactory)
-        .isInstanceOf(MutablePropertiesBagImpl.class);
+        .isInstanceOf(PropertiesBagImpl.class);
     assertThat(propertiesBag.isEmpty()).isFalse();
   }
 
@@ -93,9 +93,9 @@ class MutablePropertiesBagImplFactoryTests {
 
     // Then
     assertThat(propertiesBag)
-        .isInstanceOf(ExtendedMutablePropertiesBag.class)
+        .isInstanceOf(ExtendedPropertiesBag.class)
         .extracting("delegate", mutablePropertiesBagAssertFactory)
-        .isInstanceOf(MutablePropertiesBagImpl.class);
+        .isInstanceOf(PropertiesBagImpl.class);
     assertThat(propertiesBag.isEmpty()).isFalse();
   }
 
@@ -104,14 +104,14 @@ class MutablePropertiesBagImplFactoryTests {
   void createShouldReturnPropertiesBagContainingGivenPropertiesMap() {
     // When
     when(property.key()).thenReturn(key);
-    when(mutablePropertyFactory.create(any(Entry.class))).thenReturn(property);
+    when(propertyFactory.create(any(Entry.class))).thenReturn(property);
     var propertiesBag = factory.create(Map.of(key, value));
 
     // Then
     assertThat(propertiesBag)
-        .isInstanceOf(ExtendedMutablePropertiesBag.class)
+        .isInstanceOf(ExtendedPropertiesBag.class)
         .extracting("delegate", mutablePropertiesBagAssertFactory)
-        .isInstanceOf(MutablePropertiesBagImpl.class);
+        .isInstanceOf(PropertiesBagImpl.class);
     assertThat(propertiesBag.isEmpty()).isFalse();
   }
 }

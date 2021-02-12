@@ -12,25 +12,31 @@ import java.util.stream.Stream;
 import lombok.NonNull;
 import org.eclipse.collections.impl.collector.Collectors2;
 
-public interface PropertiesBag<T extends Property> {
+public interface PropertiesBag {
 
-  void put(T property);
+  void put(Property property);
 
-  T put(String key, String value);
+  Property put(String key, String value);
 
-  T get(String key);
+  Property get(String key);
 
   boolean isEmpty();
 
   int size();
 
-  Stream<T> stream();
+  Stream<Property> stream();
+
+  Optional<Property> remove(String key);
+
+  void flush();
+
+  void clear();
 
   default Set<String> keys() {
     return stream().map(Property::key).collect(Collectors2.toSet());
   }
 
-  default void forEach(@NonNull Consumer<T> propertyConsumer) {
+  default void forEach(@NonNull Consumer<Property> propertyConsumer) {
     stream().forEach(propertyConsumer);
   }
 
@@ -38,7 +44,7 @@ public interface PropertiesBag<T extends Property> {
     return ofNullable(get(key)).flatMap(p -> p.map(as));
   }
 
-  default Set<T> getAll(@NonNull Set<String> keys) {
+  default Set<Property> getAll(@NonNull Set<String> keys) {
     return keys.stream().map(this::get).filter(Objects::nonNull).collect(Collectors2.toSet());
   }
 

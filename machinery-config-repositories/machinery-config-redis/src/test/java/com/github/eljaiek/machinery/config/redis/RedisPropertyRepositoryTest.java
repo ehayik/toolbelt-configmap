@@ -78,40 +78,4 @@ class RedisPropertyRepositoryTest {
     // Then
     assertThat(entity.getValue()).isEqualTo("Admin");
   }
-
-  @Test
-  void removeShouldSucceed() {
-    // When
-    propertyHashRepository.save(new PropertyHash(key, value));
-    propertyRepository.remove(key);
-
-    // Then
-    assertThat(propertyHashRepository.findById(key)).isEmpty();
-  }
-
-  @Test
-  void removeAllByNameSpaceShouldSucceed() {
-    // Given
-    var props =
-        Map.of(
-            key,
-            value,
-            "mail.server.enabled",
-            "true",
-            "mail.server.host",
-            "smtp.googlemail.com",
-            "mail.server.port",
-            "587",
-            "mail.server.user.name",
-            "admin@gmail.com",
-            "mail.server.user.password",
-            "admin123");
-
-    // When
-    propertyRepository.save(props);
-    propertyRepository.removeAllByNameSpace(namespace);
-
-    // Then
-    assertThat(propertyRepository.findAllByNamespace(namespace)).isEmpty();
-  }
 }

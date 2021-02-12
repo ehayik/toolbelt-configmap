@@ -1,9 +1,9 @@
 package com.github.eljaiek.machinery.config;
 
-import com.github.eljaiek.machinery.config.core.MutablePropertiesBagFactory;
-import com.github.eljaiek.machinery.config.core.MutablePropertiesBagFactoryImpl;
-import com.github.eljaiek.machinery.config.core.MutablePropertyFactory;
-import com.github.eljaiek.machinery.config.core.MutablePropertyFactoryImpl;
+import com.github.eljaiek.machinery.config.core.PropertiesBagFactory;
+import com.github.eljaiek.machinery.config.core.PropertiesBagFactoryImpl;
+import com.github.eljaiek.machinery.config.core.PropertyFactory;
+import com.github.eljaiek.machinery.config.core.PropertyFactoryImpl;
 import com.github.eljaiek.machinery.config.core.PropertyRepository;
 import com.github.eljaiek.machinery.config.jpa.JpaModuleConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -18,15 +18,15 @@ class MachineryConfigAutoConfiguration {
 
   @Bean
   @ConditionalOnMissingBean
-  MutablePropertyFactory propertyFactory(PropertyRepository propertyRepository) {
-    return new MutablePropertyFactoryImpl(propertyRepository);
+  PropertyFactory propertyFactory(PropertyRepository propertyRepository) {
+    return new PropertyFactoryImpl(propertyRepository);
   }
 
   @Bean
   @ConditionalOnMissingBean
-  MutablePropertiesBagFactory propertiesBagFactory(
-      MutablePropertyFactory mutablePropertyFactory, PropertyRepository propertyRepository) {
-    return new MutablePropertiesBagFactoryImpl(propertyRepository, mutablePropertyFactory);
+  PropertiesBagFactory propertiesBagFactory(
+      PropertyFactory propertyFactory, PropertyRepository propertyRepository) {
+    return new PropertiesBagFactoryImpl(propertyRepository, propertyFactory);
   }
 
   @Configuration

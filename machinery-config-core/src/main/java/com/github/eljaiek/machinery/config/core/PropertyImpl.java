@@ -11,14 +11,13 @@ import lombok.With;
 @RequiredArgsConstructor
 @EqualsAndHashCode(of = "key")
 @ToString(of = {"key", "value"})
-public final class MutablePropertyImpl implements MutableProperty {
+final class PropertyImpl implements Property {
 
   private static final Pattern NUM_PATTERN = Pattern.compile("-?\\d+(\\.\\d+)?");
 
   private final String key;
   private final @With String value;
   private final Consumer<Property> save;
-  private final Consumer<String> removeByKey;
 
   @Override
   public String key() {
@@ -38,10 +37,5 @@ public final class MutablePropertyImpl implements MutableProperty {
   @Override
   public void save() {
     save.accept(this);
-  }
-
-  @Override
-  public void remove() {
-    removeByKey.accept(key);
   }
 }

@@ -14,7 +14,7 @@ import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 @TestMethodOrder(MethodName.class)
-class MutablePropertyImplTests {
+class PropertyImplTests {
 
   final String key = "time.unit";
   final String value = DAYS.toString();
@@ -22,7 +22,7 @@ class MutablePropertyImplTests {
   @Test
   void asTextShouldNotReturnEmpty() {
     // Given
-    var property = new MutablePropertyImpl("email.sender", "jhon.doe@domain.com", x -> {}, x -> {});
+    var property = new PropertyImpl("email.sender", "jhon.doe@domain.com", x -> {});
 
     // Then
     assertThat(property.asText()).isEqualTo("jhon.doe@domain.com");
@@ -33,7 +33,7 @@ class MutablePropertyImplTests {
   @ValueSource(strings = " ")
   void asTextShouldReturnEmptyString(String value) {
     // Given
-    var property = new MutablePropertyImpl("email.sender", value, x -> {}, x -> {});
+    var property = new PropertyImpl("email.sender", value, x -> {});
 
     // Then
     assertThat(property.asText()).isEmpty();
@@ -42,7 +42,7 @@ class MutablePropertyImplTests {
   @Test
   void asIntShouldNotReturnZero() {
     // Given
-    var property = new MutablePropertyImpl("server.port", "80", x -> {}, x -> {});
+    var property = new PropertyImpl("server.port", "80", x -> {});
 
     // Then
     assertThat(property.asInt()).isEqualTo(80);
@@ -53,7 +53,7 @@ class MutablePropertyImplTests {
   @ValueSource(strings = " ")
   void asIntShouldReturnZero(String value) {
     // Given
-    var property = new MutablePropertyImpl("server.port", value, x -> {}, x -> {});
+    var property = new PropertyImpl("server.port", value, x -> {});
 
     // Then
     assertThat(property.asInt()).isZero();
@@ -62,7 +62,7 @@ class MutablePropertyImplTests {
   @Test
   void asLongShouldNotReturnZero() {
     // Given
-    var property = new MutablePropertyImpl("server.port", "8000", x -> {}, x -> {});
+    var property = new PropertyImpl("server.port", "8000", x -> {});
 
     // Then
     assertThat(property.asLong()).isEqualTo(8000L);
@@ -73,7 +73,7 @@ class MutablePropertyImplTests {
   @ValueSource(strings = "  ")
   void asLongShouldReturnZero(String value) {
     // Given
-    var property = new MutablePropertyImpl("server.port", value, x -> {}, x -> {});
+    var property = new PropertyImpl("server.port", value, x -> {});
 
     // Then
     assertThat(property.asLong()).isZero();
@@ -82,7 +82,7 @@ class MutablePropertyImplTests {
   @Test
   void asFloatShouldNotReturnZero() {
     // Given
-    var property = new MutablePropertyImpl("margin.top", "0.5", x -> {}, x -> {});
+    var property = new PropertyImpl("margin.top", "0.5", x -> {});
 
     // Then
     assertThat(property.asFloat()).isEqualTo(0.5F);
@@ -93,7 +93,7 @@ class MutablePropertyImplTests {
   @ValueSource(strings = " ")
   void asFloatShouldReturnZero(String value) {
     // Given
-    var property = new MutablePropertyImpl("margin.top", value, x -> {}, x -> {});
+    var property = new PropertyImpl("margin.top", value, x -> {});
 
     // Then
     assertThat(property.asFloat()).isEqualTo(0.0F);
@@ -103,7 +103,7 @@ class MutablePropertyImplTests {
   @ValueSource(strings = {"True", "80"})
   void asBooleanShouldReturnTrue(String value) {
     // Given
-    var property = new MutablePropertyImpl("mail.enable", value, x -> {}, x -> {});
+    var property = new PropertyImpl("mail.enable", value, x -> {});
 
     // Then
     assertThat(property.asBoolean()).isTrue();
@@ -114,7 +114,7 @@ class MutablePropertyImplTests {
   @ValueSource(strings = {"0", "  "})
   void asBooleanShouldReturnFalse(String value) {
     // Given
-    var property = new MutablePropertyImpl("mail.enable", value, x -> {}, x -> {});
+    var property = new PropertyImpl("mail.enable", value, x -> {});
 
     // Then
     assertThat(property.asBoolean()).isFalse();
@@ -124,7 +124,7 @@ class MutablePropertyImplTests {
   @ValueSource(strings = {"0", "0.0", "12", "12.004", "-1"})
   void isNumberShouldReturnTrue(String value) {
     // Given
-    var property = new MutablePropertyImpl("margin.top", value, x -> {}, x -> {});
+    var property = new PropertyImpl("margin.top", value, x -> {});
 
     // Then
     assertThat(property.isNumeric()).isTrue();
@@ -135,7 +135,7 @@ class MutablePropertyImplTests {
   @ValueSource(strings = {" ", "TRUE", "12FE", "ER12.004", "FDefer*"})
   void isNumberShouldReturnFalse(String value) {
     // Given
-    var property = new MutablePropertyImpl("margin.top", value, x -> {}, x -> {});
+    var property = new PropertyImpl("margin.top", value, x -> {});
 
     // Then
     assertThat(property.isNumeric()).isFalse();
@@ -144,7 +144,7 @@ class MutablePropertyImplTests {
   @Test
   void mapShouldNotReturnEmpty() {
     // Given
-    var property = new MutablePropertyImpl(key, value, x -> {}, x -> {});
+    var property = new PropertyImpl(key, value, x -> {});
 
     // Then
     assertThat(property.map(TimeUnit::valueOf)).isPresent().get().isEqualTo(DAYS);
@@ -155,7 +155,7 @@ class MutablePropertyImplTests {
   @ValueSource(strings = " ")
   void mapShouldReturnEmpty(String value) {
     // Given
-    var property = new MutablePropertyImpl(key, value, x -> {}, x -> {});
+    var property = new PropertyImpl(key, value, x -> {});
 
     // Then
     assertThat(property.map(TimeUnit::valueOf)).isEmpty();
@@ -166,7 +166,7 @@ class MutablePropertyImplTests {
     // Given
     var timeUnits = TimeUnit.values();
     var value = Stream.of(timeUnits).map(TimeUnit::toString).collect(makeString(" "));
-    var property = new MutablePropertyImpl(key, value, x -> {}, x -> {});
+    var property = new PropertyImpl(key, value, x -> {});
 
     // Then
     assertThat(property.asList(TimeUnit::valueOf)).contains(timeUnits);
@@ -175,7 +175,7 @@ class MutablePropertyImplTests {
   @Test
   void asListShouldReturnListWithOnlyOneElement() {
     // Given
-    var property = new MutablePropertyImpl(key, value, x -> {}, x -> {});
+    var property = new PropertyImpl(key, value, x -> {});
 
     // Then
     assertThat(property.asList(TimeUnit::valueOf)).hasSize(1);
@@ -186,7 +186,7 @@ class MutablePropertyImplTests {
   @ValueSource(strings = "  ")
   void asListShouldReturnEmptyList(String value) {
     // Given
-    var property = new MutablePropertyImpl(key, value, x -> {}, x -> {});
+    var property = new PropertyImpl(key, value, x -> {});
 
     // Then
     assertThat(property.asList(String::toUpperCase)).isEmpty();
@@ -197,7 +197,7 @@ class MutablePropertyImplTests {
     // Given
     var timeUnits = TimeUnit.values();
     var value = Stream.of(timeUnits).map(TimeUnit::toString).collect(makeString(","));
-    var property = new MutablePropertyImpl(key, value, x -> {}, x -> {});
+    var property = new PropertyImpl(key, value, x -> {});
 
     // Then
     assertThat(property.asList(TimeUnit::valueOf, ",")).contains(timeUnits);

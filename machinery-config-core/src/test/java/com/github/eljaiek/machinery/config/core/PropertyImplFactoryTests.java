@@ -15,23 +15,23 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 @TestMethodOrder(MethodName.class)
-class MutablePropertyImplFactoryTests {
+class PropertyImplFactoryTests {
 
   final String key = "mail.smtp.host";
   final String value = "smtp.mailtrap.io";
 
-  MutablePropertyFactory mutablePropertyFactory;
+  PropertyFactory propertyFactory;
   @Mock PropertyRepository propertyRepository;
 
   @BeforeEach
   void setUp() {
-    mutablePropertyFactory = new MutablePropertyFactoryImpl(propertyRepository);
+    propertyFactory = new PropertyFactoryImpl(propertyRepository);
   }
 
   @Test
   void createShouldReturnProperty() {
     // When
-    var actual = mutablePropertyFactory.create(key, value);
+    var actual = propertyFactory.create(key, value);
 
     // Then
     assertThat(actual)
@@ -43,21 +43,21 @@ class MutablePropertyImplFactoryTests {
   @Test
   void createShouldFailWhenKeyIsNull() {
     assertThatIllegalArgumentException()
-        .isThrownBy(() -> mutablePropertyFactory.create(null, ""))
+        .isThrownBy(() -> propertyFactory.create(null, ""))
         .withMessage("key cannot be null or blank.");
   }
 
   @Test
   void createShouldFailWhenKeyIsEmpty() {
     assertThatIllegalArgumentException()
-        .isThrownBy(() -> mutablePropertyFactory.create("", ""))
+        .isThrownBy(() -> propertyFactory.create("", ""))
         .withMessage("key cannot be null or blank.");
   }
 
   @Test
   void createShouldFailWhenKeyIsBlank() {
     assertThatIllegalArgumentException()
-        .isThrownBy(() -> mutablePropertyFactory.create("  ", ""))
+        .isThrownBy(() -> propertyFactory.create("  ", ""))
         .withMessage("key cannot be null or blank.");
   }
 
@@ -67,7 +67,7 @@ class MutablePropertyImplFactoryTests {
     var mapEntry = Map.of(key, value).entrySet().iterator().next();
 
     // When
-    var actual = mutablePropertyFactory.create(mapEntry);
+    var actual = propertyFactory.create(mapEntry);
 
     // Then
     assertThat(actual)
@@ -80,7 +80,7 @@ class MutablePropertyImplFactoryTests {
   void createShouldLoadValueFromRepository() {
     // When
     when(propertyRepository.getValue(key)).thenReturn(value);
-    var actual = mutablePropertyFactory.create(key);
+    var actual = propertyFactory.create(key);
 
     // Then
     assertThat(actual.value()).get().isEqualTo(value);

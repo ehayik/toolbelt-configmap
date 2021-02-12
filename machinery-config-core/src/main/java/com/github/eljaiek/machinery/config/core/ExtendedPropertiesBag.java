@@ -9,56 +9,43 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Stream;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NonNull;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
 @AllArgsConstructor(access = PACKAGE)
-public final class ExtendedMutablePropertiesBag implements MutablePropertiesBag {
+final class ExtendedPropertiesBag implements PropertiesBag {
 
-  private final MutablePropertiesBag delegate;
-  private final Consumer<Set<MutableProperty>> saveBatch;
-  private final Runnable removeBatch;
-  private Set<String> transientPropertyKeys;
+  private final PropertiesBag delegate;
 
-  public ExtendedMutablePropertiesBag(
-      MutablePropertiesBag delegate, Consumer<Set<MutableProperty>> saveBatch) {
-    this(delegate, saveBatch, delegate::clear, null);
-  }
+  @Getter(PACKAGE)
+  private final Set<String> transientPropertyKeys;
 
-  public ExtendedMutablePropertiesBag(
-      @NonNull MutablePropertiesBag delegate,
-      @NonNull Consumer<Set<MutableProperty>> saveBatch,
-      @NonNull Runnable removeBatch) {
-    this(delegate, saveBatch, removeBatch, UnifiedSet.newSet());
+  private final Consumer<Set<Property>> saveBatch;
+
+  public ExtendedPropertiesBag(
+      @NonNull PropertiesBag delegate, @NonNull Consumer<Set<Property>> saveBatch) {
+    this(delegate, UnifiedSet.newSet(), saveBatch);
   }
 
   boolean isTransient(String propertyKey) {
-    return getTransientPropertyKeys().contains(propertyKey);
-  }
-
-  Set<String> getTransientPropertyKeys() {
-
-    if (transientPropertyKeys == null) {
-      transientPropertyKeys = delegate.keys();
-    }
-
-    return transientPropertyKeys;
+    return transientPropertyKeys.contains(propertyKey);
   }
 
   boolean hasTransientProperties() {
-    return !getTransientPropertyKeys().isEmpty();
+    return !transientPropertyKeys.isEmpty();
   }
 
   @Override
-  public void put(MutableProperty property) {
+  public void put(Property property) {
     delegate.put(property);
-    getTransientPropertyKeys().add(property.key());
+    transientPropertyKeys.add(property.key());
   }
 
   @Override
-  public MutableProperty put(String key, String value) {
+  public Property put(String key, String value) {
     var property = delegate.put(key, value);
-    getTransientPropertyKeys().add(key);
+    transientPropertyKeys.add(key);
     return property;
   }
 
@@ -74,9 +61,8 @@ public final class ExtendedMutablePropertiesBag implements MutablePropertiesBag 
 
   @Override
   public void clear() {
-    removeBatch.run();
-    getTransientPropertyKeys().clear();
-    delegate.flush();
+    transientPropertyKeys.clear();
+    delegate.clear();
   }
 
   @Override
@@ -85,7 +71,7 @@ public final class ExtendedMutablePropertiesBag implements MutablePropertiesBag 
   }
 
   @Override
-  public Set<MutableProperty> getAll(@NonNull Set<String> keys) {
+  public Set<Property> getAll(@NonNull Set<String> keys) {
     return delegate.getAll(keys);
   }
 
@@ -137,11 +123,12 @@ public final class ExtendedMutablePropertiesBag implements MutablePropertiesBag 
 
   @Override
   public void flush() {
-    delegate.flush();
+    saveBatch.accept(delegate.getAll(transientPropertyKeys));
+    clear();
   }
 
   @Override
-  public Stream<MutableProperty> stream() {
+  public Stream<Property> stream() {
     return delegate.stream();
   }
 
@@ -151,23 +138,18 @@ public final class ExtendedMutablePropertiesBag implements MutablePropertiesBag 
   }
 
   @Override
-  public void forEach(Consumer<MutableProperty> consumer) {
+  public void forEach(Consumer<Property> consumer) {
     delegate.forEach(consumer);
   }
 
   @Override
-  public MutableProperty get(String key) {
+  public Property get(String key) {
     return delegate.get(key);
   }
 
   @Override
-  public void save() {
-    saveBatch.accept(delegate.getAll(getTransientPropertyKeys()));
-  }
-
-  @Override
-  public Optional<MutableProperty> remove(String key) {
-    getTransientPropertyKeys().removeIf(x -> x.equals(key));
+  public Optional<Property> remove(String key) {
+    transientPropertyKeys.removeIf(x -> x.equals(key));
     return delegate.remove(key);
   }
 }

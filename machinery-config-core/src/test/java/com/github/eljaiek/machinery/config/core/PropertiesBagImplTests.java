@@ -23,14 +23,14 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 @TestMethodOrder(MethodName.class)
-class MutablePropertiesBagImplTests {
+class PropertiesBagImplTests {
 
   final String key = "time.unit";
   final String otherKey = "other.prop";
   final String value = DAYS.toString();
 
-  @Mock MutableProperty property;
-  @Mock MutablePropertyFactory mutablePropertyFactory;
+  @Mock Property property;
+  @Mock PropertyFactory propertyFactory;
 
   @Test
   void putShouldAddPropertyAndNotReturnNull() {
@@ -39,13 +39,13 @@ class MutablePropertiesBagImplTests {
             x -> {
               var key = (String) x.getArgument(0);
               var value = (String) x.getArgument(1);
-              return new MutablePropertyImpl(key, value, s -> {}, s -> {});
+              return new PropertyImpl(key, value, s -> {});
             })
-        .when(mutablePropertyFactory)
+        .when(propertyFactory)
         .create(anyString(), anyString());
 
     // Given
-    var propertiesBag = new MutablePropertiesBagImpl(mutablePropertyFactory);
+    var propertiesBag = new PropertiesBagImpl(propertyFactory);
     var property = propertiesBag.put(key, value);
 
     // Then
@@ -55,39 +55,40 @@ class MutablePropertiesBagImplTests {
 
   @Test
   void isEmptyShouldReturnFalse() {
-    assertThat(new MutablePropertiesBagImpl(Set.of(property), mutablePropertyFactory).isEmpty())
-        .isFalse();
+    assertThat(new PropertiesBagImpl(Set.of(property), propertyFactory).isEmpty()).isFalse();
   }
 
   @Test
-  void saveShouldSucceed() {
+  void flushShouldSucceed() {
     // Given
-    var propertiesBag = new MutablePropertiesBagImpl(Set.of(property), mutablePropertyFactory);
+    var propertiesBag = new PropertiesBagImpl(Set.of(property), propertyFactory);
+
+    // When
+    propertiesBag.flush();
 
     // Then
-    propertiesBag.save();
     verify(property).save();
+    assertThat(propertiesBag.isEmpty()).isTrue();
   }
 
   @Test
   void removeShouldReturnRemovedProperty() {
     // Given
     when(property.key()).thenReturn(key);
-    var propertiesBag = new MutablePropertiesBagImpl(Set.of(property), mutablePropertyFactory);
+    var propertiesBag = new PropertiesBagImpl(Set.of(property), propertyFactory);
 
     // When
     var actual = propertiesBag.remove(key);
 
     // Then
-    verify(property).remove();
     assertThat(actual).isPresent();
-    assertThat(propertiesBag.size()).isZero();
+    assertThat(propertiesBag.isEmpty()).isTrue();
   }
 
   @Test
   void removeShouldReturnEmptyWhenPropertyIsNotPresent() {
     // Given
-    var propertiesBag = new MutablePropertiesBagImpl(mutablePropertyFactory);
+    var propertiesBag = new PropertiesBagImpl(propertyFactory);
 
     // When
     var actual = propertiesBag.remove(key);
@@ -100,13 +101,12 @@ class MutablePropertiesBagImplTests {
   void clearShouldSucceed() {
     // Given
     when(property.key()).thenReturn(key);
-    var propertiesBag = new MutablePropertiesBagImpl(Set.of(property), mutablePropertyFactory);
+    var propertiesBag = new PropertiesBagImpl(Set.of(property), propertyFactory);
 
     // When
     propertiesBag.clear();
 
     // Then
-    verify(property).remove();
     assertThat(propertiesBag.isEmpty()).isTrue();
   }
 
@@ -114,7 +114,7 @@ class MutablePropertiesBagImplTests {
   void forEachShouldIterateProperties() {
     // Given
     var values = new LinkedList<String>();
-    var propertiesBag = new MutablePropertiesBagImpl(Set.of(property), mutablePropertyFactory);
+    var propertiesBag = new PropertiesBagImpl(Set.of(property), propertyFactory);
 
     // When
     when(property.asText()).thenReturn(value);
@@ -127,9 +127,8 @@ class MutablePropertiesBagImplTests {
   @Test
   void getValueAsShouldNotReturnEmpty() {
     // Given
-    var immutableProperty = new MutablePropertyImpl(key, value, s -> {}, s -> {});
-    var propertiesBag =
-        new MutablePropertiesBagImpl(Set.of(immutableProperty), mutablePropertyFactory);
+    var immutableProperty = new PropertyImpl(key, value, s -> {});
+    var propertiesBag = new PropertiesBagImpl(Set.of(immutableProperty), propertyFactory);
 
     // Then
     assertThat(propertiesBag.getValueAs(key, TimeUnit::valueOf)).isPresent().get().isEqualTo(DAYS);
@@ -138,9 +137,8 @@ class MutablePropertiesBagImplTests {
   @Test
   void getValueAsShouldReturnEmpty() {
     // Given
-    var immutableProperty = new MutablePropertyImpl(key, "", s -> {}, s -> {});
-    var propertiesBag =
-        new MutablePropertiesBagImpl(Set.of(immutableProperty), mutablePropertyFactory);
+    var immutableProperty = new PropertyImpl(key, "", s -> {});
+    var propertiesBag = new PropertiesBagImpl(Set.of(immutableProperty), propertyFactory);
 
     // Then
     assertThat(propertiesBag.getValueAs(key, TimeUnit::valueOf)).isEmpty();
@@ -150,7 +148,7 @@ class MutablePropertiesBagImplTests {
   void getAllShouldNotReturnEmptyList() {
     // Given
     when(property.key()).thenReturn(key);
-    var propertiesBag = new MutablePropertiesBagImpl(Set.of(property), mutablePropertyFactory);
+    var propertiesBag = new PropertiesBagImpl(Set.of(property), propertyFactory);
 
     // Then
     assertThat(propertiesBag.getAll(Set.of(key, otherKey))).containsOnly(property);
@@ -160,7 +158,7 @@ class MutablePropertiesBagImplTests {
   void getAllShouldReturnEmptyList() {
     // Given
     when(property.key()).thenReturn(key);
-    var propertiesBag = new MutablePropertiesBagImpl(Set.of(property), mutablePropertyFactory);
+    var propertiesBag = new PropertiesBagImpl(Set.of(property), propertyFactory);
 
     // Then
     assertThat(propertiesBag.getAll(Set.of(otherKey))).isEmpty();
@@ -170,7 +168,7 @@ class MutablePropertiesBagImplTests {
   void getValueShouldNotReturnEmpty() {
     // Given
     when(property.key()).thenReturn(key);
-    var propertiesBag = new MutablePropertiesBagImpl(Set.of(property), mutablePropertyFactory);
+    var propertiesBag = new PropertiesBagImpl(Set.of(property), propertyFactory);
 
     // When
     when(property.value()).thenReturn(Optional.of(value));
@@ -183,7 +181,7 @@ class MutablePropertiesBagImplTests {
   void getValueShouldReturnEmpty() {
     // Given
     when(property.key()).thenReturn(key);
-    var propertiesBag = new MutablePropertiesBagImpl(Set.of(property), mutablePropertyFactory);
+    var propertiesBag = new PropertiesBagImpl(Set.of(property), propertyFactory);
 
     // Then
     assertThat(propertiesBag.getValue(otherKey)).isEmpty();
@@ -193,7 +191,7 @@ class MutablePropertiesBagImplTests {
   void getValueAsTextShouldNotReturnEmpty() {
     // Given
     when(property.key()).thenReturn(key);
-    var propertiesBag = new MutablePropertiesBagImpl(Set.of(property), mutablePropertyFactory);
+    var propertiesBag = new PropertiesBagImpl(Set.of(property), propertyFactory);
 
     // When
     when(property.asText()).thenReturn(value);
@@ -206,7 +204,7 @@ class MutablePropertiesBagImplTests {
   void getValueAsTextShouldReturnEmpty() {
     // Given
     when(property.key()).thenReturn(key);
-    var propertiesBag = new MutablePropertiesBagImpl(Set.of(property), mutablePropertyFactory);
+    var propertiesBag = new PropertiesBagImpl(Set.of(property), propertyFactory);
 
     // Then
     assertThat(propertiesBag.getValueAsText(otherKey)).isEmpty();
@@ -216,7 +214,7 @@ class MutablePropertiesBagImplTests {
   void getValueAsIntShouldNotReturnZero() {
     // Given
     when(property.key()).thenReturn(key);
-    var propertiesBag = new MutablePropertiesBagImpl(Set.of(property), mutablePropertyFactory);
+    var propertiesBag = new PropertiesBagImpl(Set.of(property), propertyFactory);
 
     // When
     when(property.asInt()).thenReturn(2);
@@ -229,7 +227,7 @@ class MutablePropertiesBagImplTests {
   void getValueAsIntShouldReturnZero() {
     // Given
     when(property.key()).thenReturn(key);
-    var propertiesBag = new MutablePropertiesBagImpl(Set.of(property), mutablePropertyFactory);
+    var propertiesBag = new PropertiesBagImpl(Set.of(property), propertyFactory);
 
     // Then
     assertThat(propertiesBag.getValueAsInt(otherKey)).isZero();
@@ -239,7 +237,7 @@ class MutablePropertiesBagImplTests {
   void getValueAsFloatShouldNotReturnZero() {
     // Given
     when(property.key()).thenReturn(key);
-    var propertiesBag = new MutablePropertiesBagImpl(Set.of(property), mutablePropertyFactory);
+    var propertiesBag = new PropertiesBagImpl(Set.of(property), propertyFactory);
 
     // When
     when(property.asFloat()).thenReturn(2.0F);
@@ -252,7 +250,7 @@ class MutablePropertiesBagImplTests {
   void getValueAsFloatShouldReturnZero() {
     // Given
     when(property.key()).thenReturn(key);
-    var propertiesBag = new MutablePropertiesBagImpl(Set.of(property), mutablePropertyFactory);
+    var propertiesBag = new PropertiesBagImpl(Set.of(property), propertyFactory);
 
     // Then
     assertThat(propertiesBag.getValueAsFloat(otherKey)).isZero();
@@ -262,7 +260,7 @@ class MutablePropertiesBagImplTests {
   void getValueAsLongShouldNotReturnZero() {
     // Given
     when(property.key()).thenReturn(key);
-    var propertiesBag = new MutablePropertiesBagImpl(Set.of(property), mutablePropertyFactory);
+    var propertiesBag = new PropertiesBagImpl(Set.of(property), propertyFactory);
 
     // When
     when(property.asLong()).thenReturn(80000L);
@@ -275,7 +273,7 @@ class MutablePropertiesBagImplTests {
   void getValueAsLongShouldReturnZero() {
     // Given
     when(property.key()).thenReturn(key);
-    var propertiesBag = new MutablePropertiesBagImpl(Set.of(property), mutablePropertyFactory);
+    var propertiesBag = new PropertiesBagImpl(Set.of(property), propertyFactory);
 
     // Then
     assertThat(propertiesBag.getValueAsLong(otherKey)).isZero();
@@ -286,7 +284,7 @@ class MutablePropertiesBagImplTests {
     // Given
     var values = Stream.of(TimeUnit.values()).map(TimeUnit::toString).collect(toList());
     when(property.key()).thenReturn(key);
-    var propertiesBag = new MutablePropertiesBagImpl(Set.of(property), mutablePropertyFactory);
+    var propertiesBag = new PropertiesBagImpl(Set.of(property), propertyFactory);
 
     // When
     when(property.asList()).thenReturn(values);
@@ -299,7 +297,7 @@ class MutablePropertiesBagImplTests {
   void getValueAsListShouldReturnEmptyList() {
     // Given
     when(property.key()).thenReturn(key);
-    var propertiesBag = new MutablePropertiesBagImpl(Set.of(property), mutablePropertyFactory);
+    var propertiesBag = new PropertiesBagImpl(Set.of(property), propertyFactory);
 
     // Then
     assertThat(propertiesBag.getValueAsList(otherKey)).isEmpty();
@@ -310,7 +308,7 @@ class MutablePropertiesBagImplTests {
     // Given
     var values = Stream.of(TimeUnit.values()).map(TimeUnit::toString).collect(toList());
     when(property.key()).thenReturn(key);
-    var propertiesBag = new MutablePropertiesBagImpl(Set.of(property), mutablePropertyFactory);
+    var propertiesBag = new PropertiesBagImpl(Set.of(property), propertyFactory);
 
     // When
     when(property.asList(",")).thenReturn(values);
@@ -323,7 +321,7 @@ class MutablePropertiesBagImplTests {
   void getValueAsListShouldReturnEmptyListWhenPassingSplitSeparator() {
     // Given
     when(property.key()).thenReturn(key);
-    var propertiesBag = new MutablePropertiesBagImpl(Set.of(property), mutablePropertyFactory);
+    var propertiesBag = new PropertiesBagImpl(Set.of(property), propertyFactory);
 
     // Then
     assertThat(propertiesBag.getValueAsList(otherKey, ",")).isEmpty();
@@ -335,7 +333,7 @@ class MutablePropertiesBagImplTests {
     var values = Stream.of(TimeUnit.values()).map(TimeUnit::toString).collect(toList());
     Function<String, String> as = String::toLowerCase;
     when(property.key()).thenReturn(key);
-    var propertiesBag = new MutablePropertiesBagImpl(Set.of(property), mutablePropertyFactory);
+    var propertiesBag = new PropertiesBagImpl(Set.of(property), propertyFactory);
 
     // When
     when(property.asList(as)).thenReturn(values);
@@ -349,7 +347,7 @@ class MutablePropertiesBagImplTests {
     // Given
     Function<String, String> as = String::toLowerCase;
     when(property.key()).thenReturn(key);
-    var propertiesBag = new MutablePropertiesBagImpl(Set.of(property), mutablePropertyFactory);
+    var propertiesBag = new PropertiesBagImpl(Set.of(property), propertyFactory);
 
     // Then
     assertThat(propertiesBag.getValueAsList(otherKey, as)).isEmpty();
@@ -361,7 +359,7 @@ class MutablePropertiesBagImplTests {
     var values = Stream.of(TimeUnit.values()).map(TimeUnit::toString).collect(toList());
     Function<String, String> as = String::toLowerCase;
     when(property.key()).thenReturn(key);
-    var propertiesBag = new MutablePropertiesBagImpl(Set.of(property), mutablePropertyFactory);
+    var propertiesBag = new PropertiesBagImpl(Set.of(property), propertyFactory);
 
     // When
     when(property.asList(as, ",")).thenReturn(values);
@@ -375,7 +373,7 @@ class MutablePropertiesBagImplTests {
     // Given
     Function<String, String> as = String::toLowerCase;
     when(property.key()).thenReturn(key);
-    var propertiesBag = new MutablePropertiesBagImpl(Set.of(property), mutablePropertyFactory);
+    var propertiesBag = new PropertiesBagImpl(Set.of(property), propertyFactory);
 
     // Then
     assertThat(propertiesBag.getValueAsList(otherKey, as, ",")).isEmpty();

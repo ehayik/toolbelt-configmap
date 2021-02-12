@@ -16,6 +16,10 @@ public interface Property {
 
   boolean isNumeric();
 
+  Property withValue(String value);
+
+  void save();
+
   /**
    * If a value is not present, returns {@code true}, otherwise {@code false}.
    *

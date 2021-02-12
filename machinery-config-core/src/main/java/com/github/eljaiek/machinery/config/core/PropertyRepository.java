@@ -11,8 +11,4 @@ public interface PropertyRepository {
   void save(String key, String value);
 
   void save(Map<String, String> properties);
-
-  void remove(String key);
-
-  void removeAllByNameSpace(String namespace);
 }

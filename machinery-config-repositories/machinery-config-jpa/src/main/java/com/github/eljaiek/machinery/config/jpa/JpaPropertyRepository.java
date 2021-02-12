@@ -38,14 +38,4 @@ public class JpaPropertyRepository implements PropertyRepository {
             .collect(toList());
     delegate.saveAll(entities);
   }
-
-  @Override
-  public void remove(@NonNull String key) {
-    delegate.deleteById(key);
-  }
-
-  @Override
-  public void removeAllByNameSpace(@NonNull String namespace) {
-    delegate.deleteAllByKeyStartingWith(namespace);
-  }
 }
