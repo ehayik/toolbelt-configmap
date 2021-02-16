@@ -2,6 +2,9 @@
 buildscript {
     repositories {
         mavenCentral()
+        maven {
+            url "http://localhost:8081/repository/machinery-releases"
+        }
     }
 }
 
@@ -85,4 +88,50 @@ file("machinery-config-repositories").eachDir {x ->
 
 bootJar {
 	enabled = false
+}
+
+java {
+    withSourcesJar()
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+
+            pom {
+                licenses {
+                    license {
+                        name = 'The Apache License, Version 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id = 'eljaiek'
+                        name = 'Eduardo Eljaiek'
+                        email = 'eduardo.eljaiek@gmail.com'
+                    }
+                }
+
+                scm {
+                    connection = 'scm:git:git://github.com/eljaiek/machinery-config.git'
+                    developerConnection = 'scm:git:git@github.com:eljaiek/machinery-config.git'
+                    url = 'https://github.com/eljaiek/machinery-config'
+                }
+            }
+        }
+    }
+
+    repositories {
+        maven {
+            url = version.endsWith('SNAPSHOT') ? project.nexusSnapshotsUrl : project.nexusReleasesUrl
+            credentials {
+                username project.nexusUser
+                password project.nexusPasswd
+
+            }
+        }
+    }
 }
