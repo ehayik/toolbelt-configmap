@@ -8,13 +8,12 @@ buildscript {
 plugins {
     id 'java-library'
     id 'maven-publish'
+    id 'ru.vyarus.pom' version '2.1.0'
 	id 'org.springframework.boot' version "${springBoot}"
 	id 'io.spring.dependency-management' version "${dependencyManagement}"
     id 'com.github.sherter.google-java-format' version '0.9'
 }
 
-group = 'com.github.eljaiek.machinery'
-version = '0.0.1'
 sourceCompatibility = '15'
 targetCompatibility = '15'
 
@@ -36,6 +35,9 @@ configurations {
 
 subprojects {
 
+    group = 'com.github.eljaiek.machinery'
+    version = '0.0.1-SNAPSHOT'
+
     repositories {
         mavenCentral()
     }
@@ -45,6 +47,8 @@ subprojects {
         apply plugin: 'java-library'
         apply plugin: 'org.springframework.boot'
         apply plugin: 'io.spring.dependency-management'
+        apply plugin: 'ru.vyarus.pom'
+        apply from: "$rootDir/gradle/ext/publish-common.gradle"
 
         dependencies {
             compileOnly 'org.projectlombok:lombok'
@@ -66,6 +70,23 @@ subprojects {
         jar {
             enabled = true
         }
+
+        java {
+            withSourcesJar()
+        }
+
+        publishing {
+            publications {
+                mavenJava(MavenPublication) {
+                    from components.java
+                    pom { x -> pom(x)}
+                }
+            }
+
+            repositories {
+                maven { x -> nexusRepository(x) }
+            }
+        }
     }
 }
 
@@ -85,50 +106,4 @@ file("machinery-config-repositories").eachDir {x ->
 
 bootJar {
 	enabled = false
-}
-
-java {
-    withSourcesJar()
-}
-
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            from components.java
-
-            pom {
-                licenses {
-                    license {
-                        name = 'The Apache License, Version 2.0'
-                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                    }
-                }
-
-                developers {
-                    developer {
-                        id = 'eljaiek'
-                        name = 'Eduardo Eljaiek'
-                        email = 'eduardo.eljaiek@gmail.com'
-                    }
-                }
-
-                scm {
-                    connection = 'scm:git:git://github.com/eljaiek/machinery-config.git'
-                    developerConnection = 'scm:git:git@github.com:eljaiek/machinery-config.git'
-                    url = 'https://github.com/eljaiek/machinery-config'
-                }
-            }
-        }
-    }
-
-    repositories {
-        maven {
-            url = version.endsWith('SNAPSHOT') ? project.nexusSnapshotsUrl : project.nexusReleasesUrl
-            credentials {
-                username project.nexusUser
-                password project.nexusPasswd
-
-            }
-        }
-    }
 }
