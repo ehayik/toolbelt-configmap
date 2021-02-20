@@ -1,0 +1,35 @@
+def pom(it) {
+    it.licenses {
+        license {
+            name = 'The Apache License, Version 2.0'
+            url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+        }
+    }
+
+    it.developers {
+        developer {
+            id = 'eljaiek'
+            name = 'Eduardo Eljaiek'
+            email = 'eduardo.eljaiek@gmail.com'
+        }
+    }
+
+    it.scm {
+        connection = 'scm:git:git://github.com/eljaiek/machinery-config.git'
+        developerConnection = 'scm:git:git@github.com:eljaiek/machinery-config.git'
+        url = 'https://github.com/eljaiek/machinery-config'
+    }
+}
+
+def nexusRepository(it) {
+    it.url = version.endsWith('SNAPSHOT') ? project.nexusSnapshotsUrl : project.nexusReleasesUrl
+    it.credentials {
+        username project.nexusUser
+        password project.nexusPasswd
+    }
+}
+
+ext {
+    pom = this.&pom
+    nexusRepository = this.&nexusRepository
+}

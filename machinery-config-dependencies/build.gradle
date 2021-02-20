@@ -1,5 +1,7 @@
 
 apply plugin: 'java-platform'
+apply plugin: 'maven-publish'
+apply from: "$rootDir/gradle/ext/publish-common.gradle"
 
 dependencies {
     constraints {
@@ -8,5 +10,19 @@ dependencies {
         api project(':machinery-config-redis')
         api project(':machinery-config-spring-boot-autoconfigure')
         api project(':machinery-config-spring-boot-starter')
+    }
+}
+
+publishing {
+    publications {
+        mavenBom(MavenPublication) {
+            from components.javaPlatform
+
+            pom { x -> pom(x)}
+        }
+    }
+
+    repositories {
+        maven { x -> nexusRepository(x) }
     }
 }
