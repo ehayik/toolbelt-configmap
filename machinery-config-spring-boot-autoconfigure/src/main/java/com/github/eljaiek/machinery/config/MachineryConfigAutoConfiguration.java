@@ -35,7 +35,7 @@ class MachineryConfigAutoConfiguration {
   static class EnableJpaModule {}
 
   @Configuration
-  @ComponentScan("com.github.eljaiek.machinery.config.redis.RedisModuleConfiguration")
+  @ComponentScan("com.github.eljaiek.machinery.config.redis")
   @ConditionalOnClass(name = "com.github.eljaiek.machinery.config.redis.RedisModuleConfiguration")
   static class EnableRedisModule {}
 }
