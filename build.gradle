@@ -19,10 +19,6 @@ targetCompatibility = '15'
 
 compileJava.dependsOn 'googleJavaFormat'
 
-googleJavaFormat {
-    exclude '.mvn/wrapper/MavenWrapperDownloader.java'
-}
-
 repositories {
     mavenCentral()
 }

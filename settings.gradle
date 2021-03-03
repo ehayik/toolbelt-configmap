@@ -7,11 +7,14 @@ include 'machinery-config-spring-boot-starter'
 include 'machinery-config-dependencies'
 
 /*
-* Includes every sub-project from machinery-config-repositories directory
+* Includes every sub-project from listed directories
 * rename them to be :machinery-config-jpa instead of 
 * machinery-config-repositories:machinery-config-jpa
 **/
-file("machinery-config-repositories").eachDir { x ->
-    include x.name
-    project(":${x.name}").projectDir = x
+[file("machinery-config-repositories"),
+ file("machinery-config-starters")].each {it ->
+    it.eachDir { x ->
+        include x.name
+        project(":${x.name}").projectDir = x
+    }
 }
