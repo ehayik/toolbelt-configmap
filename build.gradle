@@ -14,7 +14,7 @@ plugins {
     id 'com.github.sherter.google-java-format' version '0.9'
 }
 
-sourceCompatibility = '15'
+sourceCompatibility = '11'
 targetCompatibility = '15'
 
 compileJava.dependsOn 'googleJavaFormat'
