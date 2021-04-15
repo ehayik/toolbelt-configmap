@@ -19,19 +19,19 @@ import org.springframework.test.context.ContextConfiguration;
 @ContextConfiguration(classes = MachineryConfigAutoConfiguration.class)
 class MachineryConfigAutoConfigurationTest {
 
-  @Autowired ApplicationContext applicationContext;
+    @Autowired ApplicationContext applicationContext;
 
-  @Test
-  void propertiesBagFactoryShouldBePresentWhenContextIsBootstrapped() {
-    assertThat(applicationContext.getBean(PropertiesBagFactory.class))
-        .isNotNull()
-        .isInstanceOf(PropertiesBagFactoryImpl.class);
-  }
+    @Test
+    void propertiesBagFactoryShouldBePresentWhenContextIsBootstrapped() {
+        assertThat(applicationContext.getBean(PropertiesBagFactory.class))
+                .isNotNull()
+                .isInstanceOf(PropertiesBagFactoryImpl.class);
+    }
 
-  @Test
-  void propertyFactoryShouldBePresentWhenContextIsBootstrapped() {
-    assertThat(applicationContext.getBean(PropertyFactory.class))
-        .isNotNull()
-        .isInstanceOf(PropertyFactoryImpl.class);
-  }
+    @Test
+    void propertyFactoryShouldBePresentWhenContextIsBootstrapped() {
+        assertThat(applicationContext.getBean(PropertyFactory.class))
+                .isNotNull()
+                .isInstanceOf(PropertyFactoryImpl.class);
+    }
 }

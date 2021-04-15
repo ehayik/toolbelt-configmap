@@ -17,6 +17,6 @@ import org.springframework.data.redis.core.RedisHash;
 @EqualsAndHashCode(of = "key")
 public final class PropertyHash implements Serializable {
 
-  private @Id String key;
-  private String value;
+    private @Id String key;
+    private String value;
 }

@@ -10,9 +10,9 @@ import org.springframework.data.redis.repository.configuration.EnableRedisReposi
 @EnableRedisRepositories
 class RedisModuleConfiguration {
 
-  @Bean
-  @ConditionalOnMissingBean
-  PropertyRepository propertyRepository(PropertyHashRepository propertyHashRepository) {
-    return new RedisPropertyRepository(propertyHashRepository);
-  }
+    @Bean
+    @ConditionalOnMissingBean
+    PropertyRepository propertyRepository(PropertyHashRepository propertyHashRepository) {
+        return new RedisPropertyRepository(propertyHashRepository);
+    }
 }

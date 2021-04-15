@@ -17,6 +17,10 @@ plugins {
 sourceCompatibility = '11'
 targetCompatibility = '15'
 
+googleJavaFormat {
+    options style: 'AOSP'
+}
+
 compileJava.dependsOn 'googleJavaFormat'
 
 repositories {

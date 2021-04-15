@@ -7,10 +7,10 @@ import org.springframework.data.repository.query.Param;
 
 public interface PropertyEntityRepository extends CrudRepository<PropertyEntity, String> {
 
-  @Query("select p.value from PropertyEntity p where p.key = :key")
-  String getValue(@Param("key") String key);
+    @Query("select p.value from PropertyEntity p where p.key = :key")
+    String getValue(@Param("key") String key);
 
-  Set<PropertyEntity> findAllByKeyStartingWith(String key);
+    Set<PropertyEntity> findAllByKeyStartingWith(String key);
 
-  void deleteAllByKeyStartingWith(String key);
+    void deleteAllByKeyStartingWith(String key);
 }

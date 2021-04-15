@@ -14,9 +14,9 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @EnableJpaRepositories
 public class JpaModuleConfiguration {
 
-  @Bean
-  @ConditionalOnMissingBean
-  PropertyRepository propertyRepository(PropertyEntityRepository propertyEntityRepository) {
-    return new JpaPropertyRepository(propertyEntityRepository);
-  }
+    @Bean
+    @ConditionalOnMissingBean
+    PropertyRepository propertyRepository(PropertyEntityRepository propertyEntityRepository) {
+        return new JpaPropertyRepository(propertyEntityRepository);
+    }
 }

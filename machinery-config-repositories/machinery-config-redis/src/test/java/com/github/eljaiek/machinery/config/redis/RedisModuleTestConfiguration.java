@@ -17,35 +17,38 @@ import redis.embedded.RedisServerBuilder;
 @PropertySource("application.properties")
 class RedisModuleTestConfiguration {
 
-  private final RedisServer redisServer;
-  private final RedisProperties redisProperties;
+    private final RedisServer redisServer;
+    private final RedisProperties redisProperties;
 
-  public RedisModuleTestConfiguration(RedisProperties redisProperties) {
-    this.redisProperties = redisProperties;
-    redisServer =
-        new RedisServerBuilder().port(redisProperties.port).setting("maxmemory 256M").build();
-  }
+    public RedisModuleTestConfiguration(RedisProperties redisProperties) {
+        this.redisProperties = redisProperties;
+        redisServer =
+                new RedisServerBuilder()
+                        .port(redisProperties.port)
+                        .setting("maxmemory 256M")
+                        .build();
+    }
 
-  @PostConstruct
-  public void postConstruct() {
-    redisServer.start();
-  }
+    @PostConstruct
+    public void postConstruct() {
+        redisServer.start();
+    }
 
-  @PreDestroy
-  public void preDestroy() {
-    redisServer.stop();
-  }
+    @PreDestroy
+    public void preDestroy() {
+        redisServer.stop();
+    }
 
-  @Bean
-  LettuceConnectionFactory redisConnectionFactory() {
-    return new LettuceConnectionFactory(redisProperties.host, redisProperties.port);
-  }
+    @Bean
+    LettuceConnectionFactory redisConnectionFactory() {
+        return new LettuceConnectionFactory(redisProperties.host, redisProperties.port);
+    }
 
-  @Bean
-  RedisTemplate<Object, Object> redisTemplate(LettuceConnectionFactory connectionFactory) {
-    RedisTemplate<Object, Object> template = new RedisTemplate<>();
-    template.setConnectionFactory(connectionFactory);
-    template.setDefaultSerializer(new StringRedisSerializer());
-    return template;
-  }
+    @Bean
+    RedisTemplate<Object, Object> redisTemplate(LettuceConnectionFactory connectionFactory) {
+        RedisTemplate<Object, Object> template = new RedisTemplate<>();
+        template.setConnectionFactory(connectionFactory);
+        template.setDefaultSerializer(new StringRedisSerializer());
+        return template;
+    }
 }

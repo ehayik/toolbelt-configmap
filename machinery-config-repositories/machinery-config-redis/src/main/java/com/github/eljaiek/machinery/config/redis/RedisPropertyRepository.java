@@ -13,35 +13,35 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class RedisPropertyRepository implements PropertyRepository {
 
-  private final PropertyHashRepository propertyHashRepository;
+    private final PropertyHashRepository propertyHashRepository;
 
-  @Override
-  public String getValue(String key) {
-    return propertyHashRepository.findById(key).map(PropertyHash::getValue).orElse("");
-  }
+    @Override
+    public String getValue(String key) {
+        return propertyHashRepository.findById(key).map(PropertyHash::getValue).orElse("");
+    }
 
-  @Override
-  public Map<String, String> findAllByNamespace(String namespace) {
-    return filterAllByNamespace(namespace)
-        .collect(toMap(PropertyHash::getKey, PropertyHash::getValue));
-  }
+    @Override
+    public Map<String, String> findAllByNamespace(String namespace) {
+        return filterAllByNamespace(namespace)
+                .collect(toMap(PropertyHash::getKey, PropertyHash::getValue));
+    }
 
-  private Stream<PropertyHash> filterAllByNamespace(String namespace) {
-    return StreamSupport.stream(propertyHashRepository.findAll().spliterator(), false)
-        .filter(p -> p.getKey().startsWith(namespace));
-  }
+    private Stream<PropertyHash> filterAllByNamespace(String namespace) {
+        return StreamSupport.stream(propertyHashRepository.findAll().spliterator(), false)
+                .filter(p -> p.getKey().startsWith(namespace));
+    }
 
-  @Override
-  public void save(String key, String value) {
-    propertyHashRepository.save(new PropertyHash(key, value));
-  }
+    @Override
+    public void save(String key, String value) {
+        propertyHashRepository.save(new PropertyHash(key, value));
+    }
 
-  @Override
-  public void save(Map<String, String> properties) {
-    Set<PropertyHash> propertyHashes =
-        properties.entrySet().stream()
-            .map(x -> new PropertyHash(x.getKey(), x.getValue()))
-            .collect(toSet());
-    propertyHashRepository.saveAll(propertyHashes);
-  }
+    @Override
+    public void save(Map<String, String> properties) {
+        Set<PropertyHash> propertyHashes =
+                properties.entrySet().stream()
+                        .map(x -> new PropertyHash(x.getKey(), x.getValue()))
+                        .collect(toSet());
+        propertyHashRepository.saveAll(propertyHashes);
+    }
 }

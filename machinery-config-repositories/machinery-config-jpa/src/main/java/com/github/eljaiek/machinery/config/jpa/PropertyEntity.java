@@ -24,12 +24,12 @@ import lombok.ToString;
 @Table(name = "mch_properties")
 public class PropertyEntity implements Serializable {
 
-  @Id
-  @Basic(optional = false)
-  @Column(name = "mch_property_key", nullable = false, length = 500)
-  private String key;
+    @Id
+    @Basic(optional = false)
+    @Column(name = "mch_property_key", nullable = false, length = 500)
+    private String key;
 
-  @Basic(optional = false)
-  @Column(name = "mch_property_value", nullable = false, length = 2500)
-  private String value;
+    @Basic(optional = false)
+    @Column(name = "mch_property_value", nullable = false, length = 2500)
+    private String value;
 }

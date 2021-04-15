@@ -20,62 +20,62 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @ContextConfiguration(classes = RedisModuleTestConfiguration.class)
 class RedisPropertyRepositoryTest {
 
-  final String key = "mail.server.alias";
-  final String value = "Administrator";
-  final String namespace = "mail.server";
+    final String key = "mail.server.alias";
+    final String value = "Administrator";
+    final String namespace = "mail.server";
 
-  @Autowired RedisPropertyRepository propertyRepository;
-  @Autowired PropertyHashRepository propertyHashRepository;
+    @Autowired RedisPropertyRepository propertyRepository;
+    @Autowired PropertyHashRepository propertyHashRepository;
 
-  @AfterEach
-  void tearDown() {
-    propertyHashRepository.deleteAll();
-  }
+    @AfterEach
+    void tearDown() {
+        propertyHashRepository.deleteAll();
+    }
 
-  @Test
-  void getValueShouldReturnExpectedValue() {
-    // When
-    propertyHashRepository.save(new PropertyHash(key, value));
+    @Test
+    void getValueShouldReturnExpectedValue() {
+        // When
+        propertyHashRepository.save(new PropertyHash(key, value));
 
-    // Then
-    assertThat(propertyRepository.getValue(key)).isEqualTo(value);
-  }
+        // Then
+        assertThat(propertyRepository.getValue(key)).isEqualTo(value);
+    }
 
-  @Test
-  void findAllByNamespaceShouldExpectedValues() {
-    // Given
-    var expected =
-        Map.of(
-            key,
-            value,
-            "mail.server.enabled",
-            "true",
-            "mail.server.host",
-            "smtp.googlemail.com",
-            "mail.server.port",
-            "587",
-            "mail.server.user.name",
-            "admin@gmail.com",
-            "mail.server.user.password",
-            "admin123");
+    @Test
+    void findAllByNamespaceShouldExpectedValues() {
+        // Given
+        var expected =
+                Map.of(
+                        key,
+                        value,
+                        "mail.server.enabled",
+                        "true",
+                        "mail.server.host",
+                        "smtp.googlemail.com",
+                        "mail.server.port",
+                        "587",
+                        "mail.server.user.name",
+                        "admin@gmail.com",
+                        "mail.server.user.password",
+                        "admin123");
 
-    // When
-    propertyRepository.save(expected);
-    propertyRepository.save("server.url", "https://localhost");
-    var actual = propertyRepository.findAllByNamespace(namespace);
+        // When
+        propertyRepository.save(expected);
+        propertyRepository.save("server.url", "https://localhost");
+        var actual = propertyRepository.findAllByNamespace(namespace);
 
-    // Then
-    assertThat(actual).containsExactlyInAnyOrderEntriesOf(expected);
-  }
+        // Then
+        assertThat(actual).containsExactlyInAnyOrderEntriesOf(expected);
+    }
 
-  @Test
-  void saveShouldUpdateValueOfExistingProperty() {
-    // When
-    propertyRepository.save(key, value);
-    propertyRepository.save(key, "Admin");
-    var entity = propertyHashRepository.findById(key).orElseThrow();
+    @Test
+    void saveShouldUpdateValueOfExistingProperty() {
+        // When
+        propertyRepository.save(key, value);
+        propertyRepository.save(key, "Admin");
+        var entity = propertyHashRepository.findById(key).orElseThrow();
 
-    // Then
-    assertThat(entity.getValue()).isEqualTo("Admin");
-  }
+        // Then
+        assertThat(entity.getValue()).isEqualTo("Admin");
+    }
 }

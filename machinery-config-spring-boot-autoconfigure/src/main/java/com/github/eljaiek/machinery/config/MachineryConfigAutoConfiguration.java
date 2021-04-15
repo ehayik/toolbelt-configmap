@@ -16,26 +16,26 @@ import org.springframework.context.annotation.Import;
 @Configuration
 class MachineryConfigAutoConfiguration {
 
-  @Bean
-  @ConditionalOnMissingBean
-  PropertyFactory propertyFactory(PropertyRepository propertyRepository) {
-    return new PropertyFactoryImpl(propertyRepository);
-  }
+    @Bean
+    @ConditionalOnMissingBean
+    PropertyFactory propertyFactory(PropertyRepository propertyRepository) {
+        return new PropertyFactoryImpl(propertyRepository);
+    }
 
-  @Bean
-  @ConditionalOnMissingBean
-  PropertiesBagFactory propertiesBagFactory(
-      PropertyFactory propertyFactory, PropertyRepository propertyRepository) {
-    return new PropertiesBagFactoryImpl(propertyRepository, propertyFactory);
-  }
+    @Bean
+    @ConditionalOnMissingBean
+    PropertiesBagFactory propertiesBagFactory(
+            PropertyFactory propertyFactory, PropertyRepository propertyRepository) {
+        return new PropertiesBagFactoryImpl(propertyRepository, propertyFactory);
+    }
 
-  @Configuration
-  @Import(JpaModuleConfiguration.class)
-  @ConditionalOnClass(name = "com.github.eljaiek.machinery.config.jpa.JpaModuleConfiguration")
-  static class EnableJpaModule {}
+    @Configuration
+    @Import(JpaModuleConfiguration.class)
+    @ConditionalOnClass(name = "com.github.eljaiek.machinery.config.jpa.JpaModuleConfiguration")
+    static class EnableJpaModule {}
 
-  @Configuration
-  @ComponentScan("com.github.eljaiek.machinery.config.redis")
-  @ConditionalOnClass(name = "com.github.eljaiek.machinery.config.redis.RedisModuleConfiguration")
-  static class EnableRedisModule {}
+    @Configuration
+    @ComponentScan("com.github.eljaiek.machinery.config.redis")
+    @ConditionalOnClass(name = "com.github.eljaiek.machinery.config.redis.RedisModuleConfiguration")
+    static class EnableRedisModule {}
 }
