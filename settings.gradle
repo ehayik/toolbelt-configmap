@@ -2,8 +2,7 @@
 rootProject.name = 'machinery-config'
 
 include 'machinery-config-core'
-include 'machinery-config-spring-boot-autoconfigure'
-include 'machinery-config-spring-boot-starter'
+include 'machinery-config-autoconfigure'
 include 'machinery-config-dependencies'
 
 /*

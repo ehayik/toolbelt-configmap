@@ -1,6 +1,6 @@
 dependencies {
     api project(':machinery-config-jpa')
     api project(':machinery-config-core')
-    api project(':machinery-config-spring-boot-autoconfigure')
+    api project(':machinery-config-autoconfigure')
     implementation 'org.springframework.boot:spring-boot-starter'
 }

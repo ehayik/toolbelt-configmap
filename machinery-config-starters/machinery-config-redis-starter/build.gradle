@@ -2,7 +2,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter'
     api project(':machinery-config-core')
     api project(':machinery-config-redis')
-    api (project(':machinery-config-spring-boot-autoconfigure')) {
+    api (project(':machinery-config-autoconfigure')) {
         exclude module: 'machinery-config-jpa'
     }
 }
