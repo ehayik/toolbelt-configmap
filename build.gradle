@@ -1,4 +1,3 @@
-
 buildscript {
     repositories {
         mavenCentral()
@@ -9,8 +8,8 @@ plugins {
     id 'java-library'
     id 'maven-publish'
     id 'ru.vyarus.pom' version '2.1.0'
-	id 'org.springframework.boot' version "${springBoot}"
-	id 'io.spring.dependency-management' version "${dependencyManagement}"
+    id 'org.springframework.boot' version "${springBoot}"
+    id 'io.spring.dependency-management' version "${dependencyManagement}"
     id 'com.github.sherter.google-java-format' version '0.9'
 }
 
@@ -28,9 +27,9 @@ repositories {
 }
 
 configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
-	}
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
 }
 
 subprojects {
@@ -42,55 +41,53 @@ subprojects {
         mavenCentral()
     }
 
-    if (it.name != 'machinery-config-dependencies') {
 
-        apply plugin: 'java-library'
-        apply plugin: 'org.springframework.boot'
-        apply plugin: 'io.spring.dependency-management'
-        apply plugin: 'ru.vyarus.pom'
-        apply from: "$rootDir/gradle/ext/publish-common.gradle"
+    apply plugin: 'java-library'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+    apply plugin: 'ru.vyarus.pom'
+    apply from: "$rootDir/gradle/ext/publish-common.gradle"
 
-        dependencies {
-            compileOnly 'org.projectlombok:lombok'
-            annotationProcessor 'org.projectlombok:lombok'
+    dependencies {
+        compileOnly 'org.projectlombok:lombok'
+        annotationProcessor 'org.projectlombok:lombok'
 
-            testCompileOnly 'org.projectlombok:lombok'
-            testAnnotationProcessor 'org.projectlombok:lombok'
-            testImplementation(platform("org.junit:junit-bom:${junit}"))
-        }
+        testCompileOnly 'org.projectlombok:lombok'
+        testAnnotationProcessor 'org.projectlombok:lombok'
+        testImplementation(platform("org.junit:junit-bom:${junit}"))
+    }
 
-        test {
-            useJUnitPlatform()
-        }
+    test {
+        useJUnitPlatform()
+    }
 
-        bootJar {
-            enabled = false
-        }
+    bootJar {
+        enabled = false
+    }
 
-        jar {
-            enabled = true
-        }
+    jar {
+        enabled = true
+    }
 
-        java {
-            withSourcesJar()
-        }
+    java {
+        withSourcesJar()
+    }
 
-        publishing {
-            publications {
-                mavenJava(MavenPublication) {
-                    from components.java
-                    pom { x -> pom(x)}
-                }
+    publishing {
+        publications {
+            mavenJava(MavenPublication) {
+                from components.java
+                pom { x -> pom(x) }
             }
+        }
 
-            repositories {
-                maven { x -> nexusRepository(x) }
-            }
+        repositories {
+            maven { x -> nexusRepository(x) }
         }
     }
 }
 
-file("machinery-config-repositories").eachDir {x ->
+file("machinery-config-repositories").eachDir { x ->
     project(":${x.name}") {
         dependencies {
             implementation project(':machinery-config-core')
@@ -105,5 +102,5 @@ file("machinery-config-repositories").eachDir {x ->
 }
 
 bootJar {
-	enabled = false
+    enabled = false
 }

@@ -3,7 +3,6 @@ rootProject.name = 'machinery-config'
 
 include 'machinery-config-core'
 include 'machinery-config-autoconfigure'
-include 'machinery-config-dependencies'
 
 /*
 * Includes every sub-project from listed directories
