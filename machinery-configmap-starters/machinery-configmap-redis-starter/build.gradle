@@ -1,0 +1,8 @@
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter'
+    api project(':machinery-configmap-core')
+    api project(':machinery-configmap-redis')
+    api (project(':machinery-configmap-autoconfigure')) {
+        exclude module: 'machinery-configmap-jpa'
+    }
+}

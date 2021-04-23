@@ -1,16 +1,16 @@
 
-rootProject.name = 'machinery-config'
+rootProject.name = 'machinery-configmap'
 
-include 'machinery-config-core'
-include 'machinery-config-autoconfigure'
+include 'machinery-configmap-core'
+include 'machinery-configmap-autoconfigure'
 
 /*
 * Includes every sub-project from listed directories
 * rename them to be :machinery-config-jpa instead of 
 * machinery-config-repositories:machinery-config-jpa
 **/
-[file("machinery-config-repositories"),
- file("machinery-config-starters")].each {it ->
+[file("machinery-configmap-repositories"),
+ file("machinery-configmap-starters")].each {it ->
     it.eachDir { x ->
         include x.name
         project(":${x.name}").projectDir = x

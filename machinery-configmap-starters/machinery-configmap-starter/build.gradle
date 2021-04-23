@@ -1,0 +1,6 @@
+dependencies {
+    api project(':machinery-configmap-jpa')
+    api project(':machinery-configmap-core')
+    api project(':machinery-configmap-autoconfigure')
+    implementation 'org.springframework.boot:spring-boot-starter'
+}
