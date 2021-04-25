@@ -17,7 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @TestMethodOrder(MethodName.class)
 class ConfigEntryFactoryTests {
 
-    static final String ERROR_MESSAGE = "ConfigEntry key cannot be null or blank.";
+    static final String ERROR_MESSAGE = "key cannot be null or blank.";
     static final String KEY = "mail.smtp.host";
     static final String VALUE = "smtp.mailtrap.io";
 

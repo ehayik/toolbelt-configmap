@@ -2,6 +2,7 @@ package com.github.eljaiek.machinery.config.core;
 
 import static java.util.concurrent.TimeUnit.DAYS;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.eclipse.collections.impl.collector.Collectors2.makeString;
 
 import java.util.concurrent.TimeUnit;
@@ -18,6 +19,17 @@ class ConfigEntryTests {
 
     static final String KEY = "time.unit";
     static final String VALUE = DAYS.toString();
+
+    @Test
+    void saveShouldThrowUnsupportedOperationExceptionWhenEntryIsReadonly() {
+        // Given
+        var entry = new ConfigEntry(KEY, VALUE);
+
+        // Then
+        assertThatThrownBy(entry::save)
+                .isInstanceOf(UnsupportedOperationException.class)
+                .hasMessage("Entry %s is readonly".formatted(KEY));
+    }
 
     @Test
     void asTextShouldNotReturnEmpty() {

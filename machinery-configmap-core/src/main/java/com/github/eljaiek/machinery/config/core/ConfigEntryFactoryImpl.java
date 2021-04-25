@@ -21,11 +21,6 @@ public class ConfigEntryFactoryImpl implements ConfigEntryFactory {
     }
 
     private ConfigEntry create(String key, Supplier<String> value) {
-
-        if (key == null || key.isBlank()) {
-            throw new IllegalArgumentException("ConfigEntry key cannot be null or blank.");
-        }
-
         return new ConfigEntry(
                 key, value.get(), p -> configEntryRepository.save(p.key(), p.asText()));
     }
