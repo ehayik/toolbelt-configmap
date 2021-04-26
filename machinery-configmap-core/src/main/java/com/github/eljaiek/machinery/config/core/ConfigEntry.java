@@ -1,5 +1,6 @@
 package com.github.eljaiek.machinery.config.core;
 
+import static java.lang.String.format;
 import static java.util.stream.Collectors.toList;
 
 import java.util.List;
@@ -40,7 +41,7 @@ public class ConfigEntry {
                 key,
                 value,
                 x -> {
-                    throw new UnsupportedOperationException(READONLY_ERROR.formatted(x.key));
+                    throw new UnsupportedOperationException(format(READONLY_ERROR, x.key));
                 });
     }
 
