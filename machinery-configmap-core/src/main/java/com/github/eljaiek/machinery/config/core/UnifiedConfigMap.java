@@ -3,8 +3,10 @@ package com.github.eljaiek.machinery.config.core;
 import static org.eclipse.collections.impl.collector.Collectors2.toMap;
 
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.BiFunction;
 import java.util.stream.Stream;
 import lombok.NonNull;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
@@ -12,24 +14,38 @@ import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 class UnifiedConfigMap implements ConfigMap {
 
     private Map<String, ConfigEntry> configEntries;
-    private final ConfigEntryFactory configEntryFactory;
+    private final BiFunction<String, String, ConfigEntry> entryBuilder;
 
-    public UnifiedConfigMap(@NonNull ConfigEntryFactory configEntryFactory) {
-        this(UnifiedMap.newMap(), configEntryFactory);
+    UnifiedConfigMap() {
+        this(ConfigEntry::new);
+    }
+
+    UnifiedConfigMap(BiFunction<String, String, ConfigEntry> entryBuilder) {
+        this(UnifiedMap.newMap(), entryBuilder);
     }
 
     UnifiedConfigMap(
-            @NonNull Map<String, String> properties, ConfigEntryFactory configEntryFactory) {
+            @NonNull Map<String, String> configEntries,
+            @NonNull BiFunction<String, String, ConfigEntry> entryBuilder) {
+        this.entryBuilder = entryBuilder;
         this.configEntries =
-                properties.entrySet().stream()
-                        .collect(toMap(Map.Entry::getKey, configEntryFactory::create));
-        this.configEntryFactory = configEntryFactory;
+                configEntries.entrySet().stream()
+                        .collect(
+                                toMap(
+                                        Entry::getKey,
+                                        x -> entryBuilder.apply(x.getKey(), x.getValue())));
     }
 
-    public UnifiedConfigMap(
-            @NonNull Set<ConfigEntry> properties, @NonNull ConfigEntryFactory configEntryFactory) {
-        this.configEntries = properties.stream().collect(toMap(ConfigEntry::key, entry -> entry));
-        this.configEntryFactory = configEntryFactory;
+    UnifiedConfigMap(Set<ConfigEntry> configEntries) {
+        this(configEntries, ConfigEntry::new);
+    }
+
+    UnifiedConfigMap(
+            @NonNull Set<ConfigEntry> configEntries,
+            @NonNull BiFunction<String, String, ConfigEntry> entryBuilder) {
+        this.configEntries =
+                configEntries.stream().collect(toMap(ConfigEntry::key, entry -> entry));
+        this.entryBuilder = entryBuilder;
     }
 
     @Override
@@ -39,7 +55,7 @@ class UnifiedConfigMap implements ConfigMap {
 
     @Override
     public ConfigEntry put(String key, String value) {
-        var configEntry = configEntryFactory.create(key, value);
+        var configEntry = entryBuilder.apply(key, value);
         configEntries.put(key, configEntry);
         return configEntry;
     }

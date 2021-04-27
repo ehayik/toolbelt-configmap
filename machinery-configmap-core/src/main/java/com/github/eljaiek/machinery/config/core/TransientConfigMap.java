@@ -19,12 +19,12 @@ class TransientConfigMap implements ConfigMap {
     @Getter(PACKAGE)
     private final Set<String> transientEntryKeys;
 
-    private final Consumer<Set<ConfigEntry>> saveBatch;
+    private final Consumer<Set<ConfigEntry>> saveEntries;
 
     public TransientConfigMap(
             @NonNull ConfigMap delegate,
             @NonNull Set<String> transientEntryKeys,
-            @NonNull Consumer<Set<ConfigEntry>> saveBatch) {
+            @NonNull Consumer<Set<ConfigEntry>> saveEntries) {
 
         if (delegate instanceof TransientConfigMap) {
             throw new IllegalArgumentException("delegate cannot be instance of TransientConfigMap");
@@ -32,12 +32,12 @@ class TransientConfigMap implements ConfigMap {
 
         this.delegate = delegate;
         this.transientEntryKeys = transientEntryKeys;
-        this.saveBatch = saveBatch;
+        this.saveEntries = saveEntries;
     }
 
     public TransientConfigMap(
-            @NonNull ConfigMap delegate, @NonNull Consumer<Set<ConfigEntry>> saveBatch) {
-        this(delegate, UnifiedSet.newSet(), saveBatch);
+            @NonNull ConfigMap delegate, @NonNull Consumer<Set<ConfigEntry>> saveEntries) {
+        this(delegate, UnifiedSet.newSet(), saveEntries);
     }
 
     boolean isTransient(String entryKey) {
@@ -135,7 +135,7 @@ class TransientConfigMap implements ConfigMap {
 
     @Override
     public void flush() {
-        saveBatch.accept(delegate.getAll(transientEntryKeys));
+        saveEntries.accept(delegate.getAll(transientEntryKeys));
         clear();
     }
 

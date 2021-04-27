@@ -5,6 +5,7 @@ import static java.util.stream.Collectors.toList;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.regex.Pattern;
@@ -23,7 +24,7 @@ public class ConfigEntry {
 
     private final String key;
     private final @With String value;
-    private final Consumer<ConfigEntry> save;
+    private final BiConsumer<String, String> save;
 
     /**
      * Creates a readonly <code>ConfigEntry</code> instance.
@@ -36,12 +37,12 @@ public class ConfigEntry {
      * @throws NullPointerException if <code>save</code> is <code>null</code>
      * @throws IllegalArgumentException if <code>key</code> is <code>null</code> or blank
      */
-    public ConfigEntry(String key, String value) {
+    ConfigEntry(String key, String value) {
         this(
                 key,
                 value,
-                x -> {
-                    throw new UnsupportedOperationException(format(READONLY_ERROR, x.key));
+                (k, v) -> {
+                    throw new UnsupportedOperationException(format(READONLY_ERROR, k));
                 });
     }
 
@@ -54,7 +55,7 @@ public class ConfigEntry {
      * @throws NullPointerException if <code>save</code> is <code>null</code>
      * @throws IllegalArgumentException if <code>key</code> is <code>null</code> or blank
      */
-    public ConfigEntry(String key, String value, @NonNull Consumer<ConfigEntry> save) {
+    ConfigEntry(String key, String value, @NonNull BiConsumer<String, String> save) {
 
         if (key == null || key.isBlank()) {
             throw new IllegalArgumentException("key cannot be null or blank.");
@@ -86,7 +87,7 @@ public class ConfigEntry {
      * @throws UnsupportedOperationException if this configuration entry is readonly
      */
     public void save() {
-        save.accept(this);
+        save.accept(key, value);
     }
 
     /**

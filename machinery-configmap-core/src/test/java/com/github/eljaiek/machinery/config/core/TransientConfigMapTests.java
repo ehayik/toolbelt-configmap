@@ -19,7 +19,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 @TestMethodOrder(MethodName.class)
-class TransientConfigMapImplTests {
+class TransientConfigMapTests {
 
     static final String KEY = "time.unit";
     static final String VALUE = DAYS.toString();

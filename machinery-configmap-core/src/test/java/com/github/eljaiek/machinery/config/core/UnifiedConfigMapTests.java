@@ -3,8 +3,6 @@ package com.github.eljaiek.machinery.config.core;
 import static java.util.concurrent.TimeUnit.DAYS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.collections.impl.collector.Collectors2.toList;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -12,6 +10,7 @@ import java.util.LinkedList;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.MethodOrderer.MethodName;
@@ -28,24 +27,14 @@ class UnifiedConfigMapTests {
     static final String KEY = "time.unit";
     static final String OTHER_KEY = "other.prop";
     static final String VALUE = DAYS.toString();
+    static final BiConsumer SAVE = (x, y) -> {};
 
     @Mock ConfigEntry configEntry;
-    @Mock ConfigEntryFactory configEntryFactory;
 
     @Test
     void putShouldAddPropertyAndNotReturnNull() {
-        // When
-        doAnswer(
-                        x -> {
-                            var key = (String) x.getArgument(0);
-                            var value = (String) x.getArgument(1);
-                            return new ConfigEntry(key, value, s -> {});
-                        })
-                .when(configEntryFactory)
-                .create(anyString(), anyString());
-
         // Given
-        var configMap = new UnifiedConfigMap(configEntryFactory);
+        var configMap = new UnifiedConfigMap();
         var configEntry = configMap.put(KEY, VALUE);
 
         // Then
@@ -55,14 +44,13 @@ class UnifiedConfigMapTests {
 
     @Test
     void isEmptyShouldReturnFalse() {
-        assertThat(new UnifiedConfigMap(Set.of(configEntry), configEntryFactory).isEmpty())
-                .isFalse();
+        assertThat(new UnifiedConfigMap(Set.of(configEntry)).isEmpty()).isFalse();
     }
 
     @Test
     void flushShouldSucceed() {
         // Given
-        var configMap = new UnifiedConfigMap(Set.of(configEntry), configEntryFactory);
+        var configMap = new UnifiedConfigMap(Set.of(configEntry));
 
         // When
         configMap.flush();
@@ -76,7 +64,7 @@ class UnifiedConfigMapTests {
     void removeShouldReturnRemovedProperty() {
         // Given
         when(configEntry.key()).thenReturn(KEY);
-        var configMap = new UnifiedConfigMap(Set.of(configEntry), configEntryFactory);
+        var configMap = new UnifiedConfigMap(Set.of(configEntry));
 
         // When
         var actual = configMap.remove(KEY);
@@ -89,7 +77,7 @@ class UnifiedConfigMapTests {
     @Test
     void removeShouldReturnEmptyWhenPropertyIsNotPresent() {
         // Given
-        var configMap = new UnifiedConfigMap(configEntryFactory);
+        var configMap = new UnifiedConfigMap();
 
         // When
         var actual = configMap.remove(KEY);
@@ -102,7 +90,7 @@ class UnifiedConfigMapTests {
     void clearShouldSucceed() {
         // Given
         when(configEntry.key()).thenReturn(KEY);
-        var configMap = new UnifiedConfigMap(Set.of(configEntry), configEntryFactory);
+        var configMap = new UnifiedConfigMap(Set.of(configEntry));
 
         // When
         configMap.clear();
@@ -115,7 +103,7 @@ class UnifiedConfigMapTests {
     void forEachShouldIterateProperties() {
         // Given
         var values = new LinkedList<String>();
-        var configMap = new UnifiedConfigMap(Set.of(configEntry), configEntryFactory);
+        var configMap = new UnifiedConfigMap(Set.of(configEntry));
 
         // When
         when(configEntry.asText()).thenReturn(VALUE);
@@ -128,8 +116,8 @@ class UnifiedConfigMapTests {
     @Test
     void getValueAsShouldNotReturnEmpty() {
         // Given
-        var configEntry = new ConfigEntry(KEY, VALUE, s -> {});
-        var configMap = new UnifiedConfigMap(Set.of(configEntry), configEntryFactory);
+        var configEntry = new ConfigEntry(KEY, VALUE, SAVE);
+        var configMap = new UnifiedConfigMap(Set.of(configEntry));
 
         // Then
         assertThat(configMap.getValueAs(KEY, TimeUnit::valueOf)).isPresent().get().isEqualTo(DAYS);
@@ -138,8 +126,8 @@ class UnifiedConfigMapTests {
     @Test
     void getValueAsShouldReturnEmpty() {
         // Given
-        var configEntry = new ConfigEntry(KEY, "", s -> {});
-        var configMap = new UnifiedConfigMap(Set.of(configEntry), configEntryFactory);
+        var configEntry = new ConfigEntry(KEY, "", SAVE);
+        var configMap = new UnifiedConfigMap(Set.of(configEntry));
 
         // Then
         assertThat(configMap.getValueAs(KEY, TimeUnit::valueOf)).isEmpty();
@@ -149,7 +137,7 @@ class UnifiedConfigMapTests {
     void getAllShouldNotReturnEmptyList() {
         // Given
         when(configEntry.key()).thenReturn(KEY);
-        var configMap = new UnifiedConfigMap(Set.of(configEntry), configEntryFactory);
+        var configMap = new UnifiedConfigMap(Set.of(configEntry));
 
         // Then
         assertThat(configMap.getAll(Set.of(KEY, OTHER_KEY))).containsOnly(configEntry);
@@ -159,7 +147,7 @@ class UnifiedConfigMapTests {
     void getAllShouldReturnEmptyList() {
         // Given
         when(configEntry.key()).thenReturn(KEY);
-        var configMap = new UnifiedConfigMap(Set.of(configEntry), configEntryFactory);
+        var configMap = new UnifiedConfigMap(Set.of(configEntry));
 
         // Then
         assertThat(configMap.getAll(Set.of(OTHER_KEY))).isEmpty();
@@ -169,7 +157,7 @@ class UnifiedConfigMapTests {
     void getValueShouldNotReturnEmpty() {
         // Given
         when(configEntry.key()).thenReturn(KEY);
-        var configMap = new UnifiedConfigMap(Set.of(configEntry), configEntryFactory);
+        var configMap = new UnifiedConfigMap(Set.of(configEntry));
 
         // When
         when(configEntry.value()).thenReturn(Optional.of(VALUE));
@@ -182,7 +170,7 @@ class UnifiedConfigMapTests {
     void getValueShouldReturnEmpty() {
         // Given
         when(configEntry.key()).thenReturn(KEY);
-        var configMap = new UnifiedConfigMap(Set.of(configEntry), configEntryFactory);
+        var configMap = new UnifiedConfigMap(Set.of(configEntry));
 
         // Then
         assertThat(configMap.getValue(OTHER_KEY)).isEmpty();
@@ -192,7 +180,7 @@ class UnifiedConfigMapTests {
     void getValueAsTextShouldNotReturnEmpty() {
         // Given
         when(configEntry.key()).thenReturn(KEY);
-        var configMap = new UnifiedConfigMap(Set.of(configEntry), configEntryFactory);
+        var configMap = new UnifiedConfigMap(Set.of(configEntry));
 
         // When
         when(configEntry.asText()).thenReturn(VALUE);
@@ -205,7 +193,7 @@ class UnifiedConfigMapTests {
     void getValueAsTextShouldReturnEmpty() {
         // Given
         when(configEntry.key()).thenReturn(KEY);
-        var configMap = new UnifiedConfigMap(Set.of(configEntry), configEntryFactory);
+        var configMap = new UnifiedConfigMap(Set.of(configEntry));
 
         // Then
         assertThat(configMap.getValueAsText(OTHER_KEY)).isEmpty();
@@ -215,7 +203,7 @@ class UnifiedConfigMapTests {
     void getValueAsIntShouldNotReturnZero() {
         // Given
         when(configEntry.key()).thenReturn(KEY);
-        var configMap = new UnifiedConfigMap(Set.of(configEntry), configEntryFactory);
+        var configMap = new UnifiedConfigMap(Set.of(configEntry));
 
         // When
         when(configEntry.asInt()).thenReturn(2);
@@ -228,7 +216,7 @@ class UnifiedConfigMapTests {
     void getValueAsIntShouldReturnZero() {
         // Given
         when(configEntry.key()).thenReturn(KEY);
-        var configMap = new UnifiedConfigMap(Set.of(configEntry), configEntryFactory);
+        var configMap = new UnifiedConfigMap(Set.of(configEntry));
 
         // Then
         assertThat(configMap.getValueAsInt(OTHER_KEY)).isZero();
@@ -238,7 +226,7 @@ class UnifiedConfigMapTests {
     void getValueAsFloatShouldNotReturnZero() {
         // Given
         when(configEntry.key()).thenReturn(KEY);
-        var configMap = new UnifiedConfigMap(Set.of(configEntry), configEntryFactory);
+        var configMap = new UnifiedConfigMap(Set.of(configEntry));
 
         // When
         when(configEntry.asFloat()).thenReturn(2.0F);
@@ -251,7 +239,7 @@ class UnifiedConfigMapTests {
     void getValueAsFloatShouldReturnZero() {
         // Given
         when(configEntry.key()).thenReturn(KEY);
-        var configMap = new UnifiedConfigMap(Set.of(configEntry), configEntryFactory);
+        var configMap = new UnifiedConfigMap(Set.of(configEntry));
 
         // Then
         assertThat(configMap.getValueAsFloat(OTHER_KEY)).isZero();
@@ -261,7 +249,7 @@ class UnifiedConfigMapTests {
     void getValueAsLongShouldNotReturnZero() {
         // Given
         when(configEntry.key()).thenReturn(KEY);
-        var configMap = new UnifiedConfigMap(Set.of(configEntry), configEntryFactory);
+        var configMap = new UnifiedConfigMap(Set.of(configEntry));
 
         // When
         when(configEntry.asLong()).thenReturn(80000L);
@@ -274,7 +262,7 @@ class UnifiedConfigMapTests {
     void getValueAsLongShouldReturnZero() {
         // Given
         when(configEntry.key()).thenReturn(KEY);
-        var configMap = new UnifiedConfigMap(Set.of(configEntry), configEntryFactory);
+        var configMap = new UnifiedConfigMap(Set.of(configEntry));
 
         // Then
         assertThat(configMap.getValueAsLong(OTHER_KEY)).isZero();
@@ -285,7 +273,7 @@ class UnifiedConfigMapTests {
         // Given
         var values = Stream.of(TimeUnit.values()).map(TimeUnit::toString).collect(toList());
         when(configEntry.key()).thenReturn(KEY);
-        var configMap = new UnifiedConfigMap(Set.of(configEntry), configEntryFactory);
+        var configMap = new UnifiedConfigMap(Set.of(configEntry));
 
         // When
         when(configEntry.asList()).thenReturn(values);
@@ -298,7 +286,7 @@ class UnifiedConfigMapTests {
     void getValueAsListShouldReturnEmptyList() {
         // Given
         when(configEntry.key()).thenReturn(KEY);
-        var configMap = new UnifiedConfigMap(Set.of(configEntry), configEntryFactory);
+        var configMap = new UnifiedConfigMap(Set.of(configEntry));
 
         // Then
         assertThat(configMap.getValueAsList(OTHER_KEY)).isEmpty();
@@ -309,7 +297,7 @@ class UnifiedConfigMapTests {
         // Given
         var values = Stream.of(TimeUnit.values()).map(TimeUnit::toString).collect(toList());
         when(configEntry.key()).thenReturn(KEY);
-        var configMap = new UnifiedConfigMap(Set.of(configEntry), configEntryFactory);
+        var configMap = new UnifiedConfigMap(Set.of(configEntry));
 
         // When
         when(configEntry.asList(",")).thenReturn(values);
@@ -322,7 +310,7 @@ class UnifiedConfigMapTests {
     void getValueAsListShouldReturnEmptyListWhenPassingSplitSeparator() {
         // Given
         when(configEntry.key()).thenReturn(KEY);
-        var configMap = new UnifiedConfigMap(Set.of(configEntry), configEntryFactory);
+        var configMap = new UnifiedConfigMap(Set.of(configEntry));
 
         // Then
         assertThat(configMap.getValueAsList(OTHER_KEY, ",")).isEmpty();
@@ -334,7 +322,7 @@ class UnifiedConfigMapTests {
         var values = Stream.of(TimeUnit.values()).map(TimeUnit::toString).collect(toList());
         Function<String, String> as = String::toLowerCase;
         when(configEntry.key()).thenReturn(KEY);
-        var configMap = new UnifiedConfigMap(Set.of(configEntry), configEntryFactory);
+        var configMap = new UnifiedConfigMap(Set.of(configEntry));
 
         // When
         when(configEntry.asList(as)).thenReturn(values);
@@ -348,7 +336,7 @@ class UnifiedConfigMapTests {
         // Given
         Function<String, String> as = String::toLowerCase;
         when(configEntry.key()).thenReturn(KEY);
-        var configMap = new UnifiedConfigMap(Set.of(configEntry), configEntryFactory);
+        var configMap = new UnifiedConfigMap(Set.of(configEntry));
 
         // Then
         assertThat(configMap.getValueAsList(OTHER_KEY, as)).isEmpty();
@@ -360,7 +348,7 @@ class UnifiedConfigMapTests {
         var values = Stream.of(TimeUnit.values()).map(TimeUnit::toString).collect(toList());
         Function<String, String> as = String::toLowerCase;
         when(configEntry.key()).thenReturn(KEY);
-        var configMap = new UnifiedConfigMap(Set.of(configEntry), configEntryFactory);
+        var configMap = new UnifiedConfigMap(Set.of(configEntry));
 
         // When
         when(configEntry.asList(as, ",")).thenReturn(values);
@@ -374,7 +362,7 @@ class UnifiedConfigMapTests {
         // Given
         Function<String, String> as = String::toLowerCase;
         when(configEntry.key()).thenReturn(KEY);
-        var configMap = new UnifiedConfigMap(Set.of(configEntry), configEntryFactory);
+        var configMap = new UnifiedConfigMap(Set.of(configEntry));
 
         // Then
         assertThat(configMap.getValueAsList(OTHER_KEY, as, ",")).isEmpty();
