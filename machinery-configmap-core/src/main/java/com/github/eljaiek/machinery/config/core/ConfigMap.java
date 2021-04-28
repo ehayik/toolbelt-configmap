@@ -28,7 +28,7 @@ public interface ConfigMap {
 
     Optional<ConfigEntry> remove(String key);
 
-    void flush();
+    void save();
 
     void clear();
 

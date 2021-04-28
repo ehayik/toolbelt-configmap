@@ -134,9 +134,8 @@ class TransientConfigMap implements ConfigMap {
     }
 
     @Override
-    public void flush() {
+    public void save() {
         saveEntries.accept(delegate.getAll(transientEntryKeys));
-        clear();
     }
 
     @Override

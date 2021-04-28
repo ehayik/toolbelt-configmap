@@ -27,7 +27,7 @@ class UnifiedConfigMapTests {
     static final String KEY = "time.unit";
     static final String OTHER_KEY = "other.prop";
     static final String VALUE = DAYS.toString();
-    static final BiConsumer SAVE = (x, y) -> {};
+    static final BiConsumer<String, String> SAVE = (x, y) -> {};
 
     @Mock ConfigEntry configEntry;
 
@@ -48,12 +48,12 @@ class UnifiedConfigMapTests {
     }
 
     @Test
-    void flushShouldSucceed() {
+    void saveShouldSucceed() {
         // Given
         var configMap = new UnifiedConfigMap(Set.of(configEntry));
 
         // When
-        configMap.flush();
+        configMap.save();
 
         // Then
         verify(configEntry).save();

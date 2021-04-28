@@ -81,9 +81,8 @@ class UnifiedConfigMap implements ConfigMap {
     }
 
     @Override
-    public void flush() {
+    public void save() {
         configEntries.values().forEach(ConfigEntry::save);
-        clear();
     }
 
     @Override

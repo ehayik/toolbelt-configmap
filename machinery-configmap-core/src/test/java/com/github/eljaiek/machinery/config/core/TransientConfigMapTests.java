@@ -47,7 +47,7 @@ class TransientConfigMapTests {
 
     @Test
     @SneakyThrows
-    void flushShouldCallSaveBatchConsumer() {
+    void saveShouldCallSaveEntriesConsumer() {
         // Given
         var properties = Set.of(configEntry);
 
@@ -56,7 +56,7 @@ class TransientConfigMapTests {
         when(delegateConfigMap.getAll(transientConfigMap.getTransientEntryKeys()))
                 .thenReturn(properties);
         transientConfigMap.put(configEntry);
-        transientConfigMap.flush();
+        transientConfigMap.save();
 
         // Then
         verify(saveBatch).accept(properties);
