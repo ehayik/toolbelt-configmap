@@ -156,4 +156,8 @@ public class ConfigEntry {
                 .map(val -> List.of(val.split(splitRegex)))
                 .orElseGet(List::of);
     }
+
+    public String toJson() {
+        return format("{\"%s\":\"%s\"}", key, value);
+    }
 }

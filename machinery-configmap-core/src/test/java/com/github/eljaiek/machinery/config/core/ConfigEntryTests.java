@@ -209,10 +209,19 @@ class ConfigEntryTests {
     void asListShouldReturnNotReturnEmptyListUsingCustomSplitSeparator() {
         // Given
         var timeUnits = TimeUnit.values();
-        var value = Stream.of(timeUnits).map(TimeUnit::toString).collect(makeString(","));
-        var entry = new ConfigEntry(KEY, value);
+        var value = Stream.of(TimeUnit.values()).map(TimeUnit::toString).collect(makeString(","));
+        var entry = new ConfigEntry(KEY, VALUE).withValue(value);
 
         // Then
         assertThat(entry.asList(TimeUnit::valueOf, ",")).contains(timeUnits);
+    }
+
+    @Test
+    void toJsonShouldReturnEntryAsWellFormedJsonString() {
+        // Given
+        var entry = new ConfigEntry(KEY, VALUE);
+
+        // Then
+        assertThat(entry.toJson()).isEqualTo("{\"%s\":\"%s\"}", KEY, VALUE);
     }
 }

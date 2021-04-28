@@ -84,4 +84,6 @@ public interface ConfigMap {
             String key, Function<String, S> as, @NonNull String splitRegex) {
         return ofNullable(get(key)).map(p -> p.asList(as, splitRegex)).orElseGet(List::of);
     }
+
+    String toJson();
 }

@@ -134,6 +134,11 @@ class TransientConfigMap implements ConfigMap {
     }
 
     @Override
+    public String toJson() {
+        return delegate.toJson();
+    }
+
+    @Override
     public void save() {
         saveEntries.accept(delegate.getAll(transientEntryKeys));
     }

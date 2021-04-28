@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.stream.Stream;
 import lombok.NonNull;
+import org.eclipse.collections.impl.collector.Collectors2;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 
 class UnifiedConfigMap implements ConfigMap {
@@ -93,6 +94,13 @@ class UnifiedConfigMap implements ConfigMap {
     @Override
     public Set<String> keys() {
         return configEntries.keySet();
+    }
+
+    @Override
+    public String toJson() {
+        return stream() //
+                .map(ConfigEntry::toJson) //
+                .collect(Collectors2.makeString("[", ",", "]"));
     }
 
     @Override
