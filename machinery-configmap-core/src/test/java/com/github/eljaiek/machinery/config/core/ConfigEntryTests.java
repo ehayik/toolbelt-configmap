@@ -8,6 +8,7 @@ import static org.eclipse.collections.impl.collector.Collectors2.makeString;
 
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer.MethodName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
@@ -21,24 +22,23 @@ class ConfigEntryTests {
     static final String KEY = "time.unit";
     static final String VALUE = DAYS.toString();
 
+    ConfigEntry configEntry;
+
+    @BeforeEach
+    void setUp() {
+        configEntry = new ConfigEntry(KEY, VALUE);
+    }
+
     @Test
     void saveShouldThrowUnsupportedOperationExceptionWhenEntryIsReadonly() {
-        // Given
-        var entry = new ConfigEntry(KEY, VALUE);
-
-        // Then
-        assertThatThrownBy(entry::save)
+        assertThatThrownBy(configEntry::save)
                 .isInstanceOf(UnsupportedOperationException.class)
                 .hasMessage(format("Entry %s is readonly", KEY));
     }
 
     @Test
     void asTextShouldNotReturnEmpty() {
-        // Given
-        var entry = new ConfigEntry("email.sender", "jhon.doe@domain.com");
-
-        // Then
-        assertThat(entry.asText()).isEqualTo("jhon.doe@domain.com");
+        assertThat(configEntry.asText()).isEqualTo(VALUE);
     }
 
     @ParameterizedTest
@@ -46,7 +46,7 @@ class ConfigEntryTests {
     @ValueSource(strings = " ")
     void asTextShouldReturnEmptyString(String value) {
         // Given
-        var entry = new ConfigEntry("email.sender", value);
+        var entry = configEntry.withValue(value);
 
         // Then
         assertThat(entry.asText()).isEmpty();
@@ -55,7 +55,7 @@ class ConfigEntryTests {
     @Test
     void asIntShouldNotReturnZero() {
         // Given
-        var entry = new ConfigEntry("server.port", "80");
+        var entry = configEntry.withValue("80");
 
         // Then
         assertThat(entry.asInt()).isEqualTo(80);
@@ -66,7 +66,7 @@ class ConfigEntryTests {
     @ValueSource(strings = " ")
     void asIntShouldReturnZero(String value) {
         // Given
-        var entry = new ConfigEntry("server.port", value);
+        var entry = configEntry.withValue(value);
 
         // Then
         assertThat(entry.asInt()).isZero();
@@ -75,7 +75,7 @@ class ConfigEntryTests {
     @Test
     void asLongShouldNotReturnZero() {
         // Given
-        var entry = new ConfigEntry("server.port", "8000");
+        var entry = configEntry.withValue("8000");
 
         // Then
         assertThat(entry.asLong()).isEqualTo(8000L);
@@ -86,7 +86,7 @@ class ConfigEntryTests {
     @ValueSource(strings = "  ")
     void asLongShouldReturnZero(String value) {
         // Given
-        var entry = new ConfigEntry("server.port", value);
+        var entry = configEntry.withValue(value);
 
         // Then
         assertThat(entry.asLong()).isZero();
@@ -95,7 +95,7 @@ class ConfigEntryTests {
     @Test
     void asFloatShouldNotReturnZero() {
         // Given
-        var entry = new ConfigEntry("margin.top", "0.5");
+        var entry = configEntry.withValue("0.5");
 
         // Then
         assertThat(entry.asFloat()).isEqualTo(0.5F);
@@ -106,7 +106,7 @@ class ConfigEntryTests {
     @ValueSource(strings = " ")
     void asFloatShouldReturnZero(String value) {
         // Given
-        var entry = new ConfigEntry("margin.top", value);
+        var entry = configEntry.withValue(value);
 
         // Then
         assertThat(entry.asFloat()).isEqualTo(0.0F);
@@ -116,7 +116,7 @@ class ConfigEntryTests {
     @ValueSource(strings = {"True", "80"})
     void asBooleanShouldReturnTrue(String value) {
         // Given
-        var entry = new ConfigEntry("mail.enable", value);
+        var entry = configEntry.withValue(value);
 
         // Then
         assertThat(entry.asBoolean()).isTrue();
@@ -127,7 +127,7 @@ class ConfigEntryTests {
     @ValueSource(strings = {"0", "  "})
     void asBooleanShouldReturnFalse(String value) {
         // Given
-        var entry = new ConfigEntry("mail.enable", value);
+        var entry = configEntry.withValue(value);
 
         // Then
         assertThat(entry.asBoolean()).isFalse();
@@ -137,7 +137,7 @@ class ConfigEntryTests {
     @ValueSource(strings = {"0", "0.0", "12", "12.004", "-1"})
     void isNumberShouldReturnTrue(String value) {
         // Given
-        var entry = new ConfigEntry("margin.top", value);
+        var entry = configEntry.withValue(value);
 
         // Then
         assertThat(entry.isNumeric()).isTrue();
@@ -148,7 +148,7 @@ class ConfigEntryTests {
     @ValueSource(strings = {" ", "TRUE", "12FE", "ER12.004", "FDefer*"})
     void isNumberShouldReturnFalse(String value) {
         // Given
-        var entry = new ConfigEntry("margin.top", value);
+        var entry = configEntry.withValue(value);
 
         // Then
         assertThat(entry.isNumeric()).isFalse();
@@ -156,11 +156,7 @@ class ConfigEntryTests {
 
     @Test
     void mapShouldNotReturnEmpty() {
-        // Given
-        var entry = new ConfigEntry(KEY, VALUE);
-
-        // Then
-        assertThat(entry.map(TimeUnit::valueOf)).isPresent().get().isEqualTo(DAYS);
+        assertThat(configEntry.map(TimeUnit::valueOf)).isPresent().get().isEqualTo(DAYS);
     }
 
     @ParameterizedTest
@@ -168,7 +164,7 @@ class ConfigEntryTests {
     @ValueSource(strings = " ")
     void mapShouldReturnEmpty(String value) {
         // Given
-        var entry = new ConfigEntry(KEY, value);
+        var entry = configEntry.withValue(value);
 
         // Then
         assertThat(entry.map(TimeUnit::valueOf)).isEmpty();
@@ -179,7 +175,7 @@ class ConfigEntryTests {
         // Given
         var timeUnits = TimeUnit.values();
         var value = Stream.of(timeUnits).map(TimeUnit::toString).collect(makeString(" "));
-        var entry = new ConfigEntry(KEY, value);
+        var entry = configEntry.withValue(value);
 
         // Then
         assertThat(entry.asList(TimeUnit::valueOf)).contains(timeUnits);
@@ -187,11 +183,7 @@ class ConfigEntryTests {
 
     @Test
     void asListShouldReturnListWithOnlyOneElement() {
-        // Given
-        var entry = new ConfigEntry(KEY, VALUE);
-
-        // Then
-        assertThat(entry.asList(TimeUnit::valueOf)).hasSize(1);
+        assertThat(configEntry.asList(TimeUnit::valueOf)).hasSize(1);
     }
 
     @ParameterizedTest
@@ -199,7 +191,7 @@ class ConfigEntryTests {
     @ValueSource(strings = "  ")
     void asListShouldReturnEmptyList(String value) {
         // Given
-        var entry = new ConfigEntry(KEY, value);
+        var entry = configEntry.withValue(value);
 
         // Then
         assertThat(entry.asList(String::toUpperCase)).isEmpty();
@@ -210,7 +202,7 @@ class ConfigEntryTests {
         // Given
         var timeUnits = TimeUnit.values();
         var value = Stream.of(TimeUnit.values()).map(TimeUnit::toString).collect(makeString(","));
-        var entry = new ConfigEntry(KEY, VALUE).withValue(value);
+        var entry = configEntry.withValue(value);
 
         // Then
         assertThat(entry.asList(TimeUnit::valueOf, ",")).contains(timeUnits);
@@ -218,10 +210,40 @@ class ConfigEntryTests {
 
     @Test
     void toJsonShouldReturnEntryAsWellFormedJsonString() {
+        assertThat(configEntry.toJson()).isEqualTo("{\"%s\":\"%s\"}", KEY, VALUE);
+    }
+
+    @Test
+    void hasKeyShouldReturnTrue() {
+        assertThat(configEntry.hasKey(KEY)).isTrue();
+    }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    void hasKeyShouldReturnFalse(String otherKey) {
+        assertThat(configEntry.hasKey(otherKey)).isFalse();
+    }
+
+    @Test
+    void hasValueShouldReturnTrue() {
+        assertThat(configEntry.hasValue(VALUE)).isTrue();
+    }
+
+    @Test
+    void hasValueShouldReturnTrueWhenValuesAreNull() {
         // Given
-        var entry = new ConfigEntry(KEY, VALUE);
+        var entry = configEntry.withValue(null);
 
         // Then
-        assertThat(entry.toJson()).isEqualTo("{\"%s\":\"%s\"}", KEY, VALUE);
+        assertThat(entry.hasValue(null)).isTrue();
+    }
+
+    @Test
+    void hasValueShouldReturnFalse() {
+        // Given
+        var entry = configEntry.withValue("");
+
+        // Then
+        assertThat(entry.hasValue(VALUE)).isFalse();
     }
 }

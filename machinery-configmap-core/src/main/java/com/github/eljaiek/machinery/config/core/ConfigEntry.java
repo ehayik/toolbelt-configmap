@@ -4,6 +4,7 @@ import static java.lang.String.format;
 import static java.util.stream.Collectors.toList;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -159,5 +160,13 @@ public class ConfigEntry {
 
     public String toJson() {
         return format("{\"%s\":\"%s\"}", key, value);
+    }
+
+    public boolean hasKey(String key) {
+        return this.key.equals(key);
+    }
+
+    public boolean hasValue(String value) {
+        return Objects.equals(this.value, value);
     }
 }
