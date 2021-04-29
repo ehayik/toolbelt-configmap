@@ -3,6 +3,7 @@ rootProject.name = 'machinery-configmap'
 
 include 'machinery-configmap-core'
 include 'machinery-configmap-autoconfigure'
+include 'jackson-datatype-machinery-configmap'
 
 /*
 * Includes every sub-project from listed directories
