@@ -1,7 +1,7 @@
 package com.github.eljaiek.machinery.config.core;
 
-import lombok.NonNull;
-import org.eclipse.collections.impl.map.mutable.UnifiedMap;
+import static org.eclipse.collections.impl.collector.Collectors2.makeString;
+import static org.eclipse.collections.impl.collector.Collectors2.toMap;
 
 import java.util.Map;
 import java.util.Map.Entry;
@@ -9,9 +9,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.stream.Stream;
-
-import static org.eclipse.collections.impl.collector.Collectors2.makeString;
-import static org.eclipse.collections.impl.collector.Collectors2.toMap;
+import lombok.NonNull;
+import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 
 class UnifiedConfigMap implements ConfigMap {
 
