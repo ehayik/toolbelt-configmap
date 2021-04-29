@@ -83,8 +83,13 @@ class TransientConfigMap implements ConfigMap {
     }
 
     @Override
-    public Set<ConfigEntry> getAll(@NonNull Set<String> keys) {
-        return delegate.getAll(keys);
+    public Set<ConfigEntry> entries() {
+        return delegate.entries();
+    }
+
+    @Override
+    public Set<ConfigEntry> entries(@NonNull Set<String> keys) {
+        return delegate.entries(keys);
     }
 
     @Override
@@ -140,7 +145,7 @@ class TransientConfigMap implements ConfigMap {
 
     @Override
     public void save() {
-        saveEntries.accept(delegate.getAll(transientEntryKeys));
+        saveEntries.accept(delegate.entries(transientEntryKeys));
     }
 
     @Override

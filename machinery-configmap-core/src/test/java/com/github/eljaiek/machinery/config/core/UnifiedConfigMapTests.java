@@ -115,21 +115,30 @@ class UnifiedConfigMapTests {
     }
 
     @Test
-    void getAllShouldNotReturnEmptyList() {
+    void entriesShouldReturnAll() {
         // Given
         var configMap = new UnifiedConfigMap(Set.of(configEntry));
 
         // Then
-        assertThat(configMap.getAll(Set.of(KEY, OTHER_KEY))).containsOnly(configEntry);
+        assertThat(configMap.entries()).contains(configEntry);
     }
 
     @Test
-    void getAllShouldReturnEmptyList() {
+    void entriesShouldNotReturnEmptyList() {
         // Given
         var configMap = new UnifiedConfigMap(Set.of(configEntry));
 
         // Then
-        assertThat(configMap.getAll(Set.of(OTHER_KEY))).isEmpty();
+        assertThat(configMap.entries(Set.of(KEY, OTHER_KEY))).containsOnly(configEntry);
+    }
+
+    @Test
+    void entriesShouldReturnEmptyList() {
+        // Given
+        var configMap = new UnifiedConfigMap(Set.of(configEntry));
+
+        // Then
+        assertThat(configMap.entries(Set.of(OTHER_KEY))).isEmpty();
     }
 
     @Test

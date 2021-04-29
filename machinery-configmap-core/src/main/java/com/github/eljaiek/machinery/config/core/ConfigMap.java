@@ -1,6 +1,7 @@
 package com.github.eljaiek.machinery.config.core;
 
 import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.toSet;
 
 import java.util.List;
 import java.util.Objects;
@@ -14,7 +15,7 @@ import org.eclipse.collections.impl.collector.Collectors2;
 
 public interface ConfigMap {
 
-    void put(ConfigEntry property);
+    void put(ConfigEntry configEntry);
 
     ConfigEntry put(String key, String value);
 
@@ -44,7 +45,11 @@ public interface ConfigMap {
         return ofNullable(get(key)).flatMap(p -> p.map(as));
     }
 
-    default Set<ConfigEntry> getAll(@NonNull Set<String> keys) {
+    default Set<ConfigEntry> entries() {
+        return stream().collect(toSet());
+    }
+
+    default Set<ConfigEntry> entries(@NonNull Set<String> keys) {
         return keys.stream().map(this::get).filter(Objects::nonNull).collect(Collectors2.toSet());
     }
 

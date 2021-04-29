@@ -53,7 +53,7 @@ class TransientConfigMapTests {
 
         // When
         when(configEntry.key()).thenReturn(KEY);
-        when(delegateConfigMap.getAll(transientConfigMap.getTransientEntryKeys()))
+        when(delegateConfigMap.entries(transientConfigMap.getTransientEntryKeys()))
                 .thenReturn(properties);
         transientConfigMap.put(configEntry);
         transientConfigMap.save();
