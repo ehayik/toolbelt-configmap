@@ -23,6 +23,7 @@ def pom(it) {
 
 def nexusRepository(it) {
     it.url = version.endsWith('SNAPSHOT') ? project.nexusSnapshotsUrl : project.nexusReleasesUrl
+    it.allowInsecureProtocol = true
     it.credentials {
         username project.nexusUser
         password project.nexusPasswd
