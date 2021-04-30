@@ -1,9 +1,12 @@
 package com.github.eljaiek.machinery.config;
 
+import com.fasterxml.jackson.databind.Module;
 import com.github.eljaiek.machinery.config.core.ConfigEntryRepository;
 import com.github.eljaiek.machinery.config.core.ConfigMaps;
+import com.github.eljaiek.machinery.config.jackson.ConfigMapModule;
 import com.github.eljaiek.machinery.config.jpa.JpaModuleConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -27,4 +30,14 @@ class MachineryConfigMapConfiguration {
     @ComponentScan("com.github.eljaiek.machinery.config.redis")
     @ConditionalOnClass(name = "com.github.eljaiek.machinery.config.redis.RedisModuleConfiguration")
     static class EnableRedisModule {}
+
+    @ConditionalOnWebApplication
+    @ConditionalOnClass(name = "com.github.eljaiek.machinery.config.jackson.ConfigMapModule")
+    static class InjectJacksonDatatypeModule {
+
+        @Bean
+        Module configMapModule(ConfigMaps configMaps) {
+            return new ConfigMapModule(configMaps);
+        }
+    }
 }
