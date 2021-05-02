@@ -15,6 +15,7 @@ plugins {
 }
 
 sourceCompatibility = '11'
+project.version = scmVersion.version
 
 googleJavaFormat {
     options style: 'AOSP'
@@ -22,26 +23,26 @@ googleJavaFormat {
 
 compileJava.dependsOn 'googleJavaFormat'
 
-repositories {
-    mavenCentral()
-}
-
 configurations {
     compileOnly {
         extendsFrom annotationProcessor
     }
 }
 
-project.version = scmVersion.version
+allprojects {
+    repositories {
+        mavenCentral()
+    }
+
+    bootJar {
+        enabled = false
+    }
+}
 
 subprojects {
 
     group = 'com.github.eljaiek.machinery'
     version = rootProject.version
-
-    repositories {
-        mavenCentral()
-    }
 
     apply plugin: 'java-library'
     apply plugin: 'org.springframework.boot'
@@ -100,8 +101,4 @@ file("machinery-configmap-repositories").eachDir { x ->
             testImplementation 'org.springframework.boot:spring-boot-starter-test'
         }
     }
-}
-
-bootJar {
-    enabled = false
 }
