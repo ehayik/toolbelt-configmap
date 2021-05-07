@@ -14,7 +14,6 @@ plugins {
     id 'pl.allegro.tech.build.axion-release' version '1.13.2'
 }
 
-sourceCompatibility = '11'
 project.version = scmVersion.version
 
 googleJavaFormat {
@@ -73,6 +72,10 @@ subprojects {
 
     java {
         withSourcesJar()
+
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(11)
+        }
     }
 
     publishing {
