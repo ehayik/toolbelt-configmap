@@ -62,7 +62,7 @@ class ConfigMapsTests {
         // Then
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> configMaps.groupBy(namespace))
-                .withMessage("namespace cannot be null or blank");
+                .withMessage("prefix cannot be null or blank");
     }
 
     @Test
@@ -79,7 +79,6 @@ class ConfigMapsTests {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     void ofShouldReturnConfigMapContainingGivenMapEntries() {
         // When
         var configMap = configMaps.of(Map.of(KEY, VALUE));
