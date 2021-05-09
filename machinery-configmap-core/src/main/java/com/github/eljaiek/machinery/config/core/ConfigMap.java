@@ -1,12 +1,15 @@
 package com.github.eljaiek.machinery.config.core;
 
+import static com.github.eljaiek.machinery.config.core.KeyOperators.key;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toSet;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.BinaryOperator;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -91,4 +94,14 @@ public interface ConfigMap {
     }
 
     String toJson();
+
+    default ConfigMap groupBy(String prefix) {
+        return groupBy(prefix, key());
+    }
+
+    ConfigMap groupBy(String prefix, BinaryOperator<String> keyOperator);
+
+    default Map<String, String> toMap() {
+        return stream().collect(Collectors2.toMap(ConfigEntry::key, ConfigEntry::asText));
+    }
 }

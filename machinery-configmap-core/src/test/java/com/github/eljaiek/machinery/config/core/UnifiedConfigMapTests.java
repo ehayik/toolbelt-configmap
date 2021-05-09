@@ -1,11 +1,13 @@
 package com.github.eljaiek.machinery.config.core;
 
+import static com.github.eljaiek.machinery.config.core.KeyOperators.removePrefix;
 import static java.util.concurrent.TimeUnit.DAYS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.collections.impl.collector.Collectors2.makeString;
 import static org.eclipse.collections.impl.collector.Collectors2.toList;
 
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
@@ -19,8 +21,11 @@ import org.junit.jupiter.api.TestMethodOrder;
 class UnifiedConfigMapTests {
 
     static final String KEY = "time.unit";
-    static final String OTHER_KEY = "other.prop";
     static final String VALUE = DAYS.toString();
+    static final String OTHER_KEY = "other.prop";
+    static final String ALIAS_KEY = "mail.alias";
+    static final String DEBUG_KEY = "mail.properties.mail.debug";
+    static final String TLS_KEY = "mail.properties.mail.smtp.starttls.enable";
 
     ConfigEntry configEntry;
 
@@ -328,5 +333,52 @@ class UnifiedConfigMapTests {
 
         // Then
         assertThat(configMap.toJson()).isEqualTo("[{\"%s\":\"%s\"}]", KEY, VALUE);
+    }
+
+    @Test
+    @SuppressWarnings("java:S2699")
+    void keysShouldNotReturnReadonlySet() {
+        // Given
+        var configMap = new UnifiedConfigMap(Set.of(configEntry));
+
+        // Then
+        configMap.keys().add("other");
+    }
+
+    @Test
+    void toMapShouldReturnExpectedResult() {
+        // Given
+        var configMap = new UnifiedConfigMap(Set.of(configEntry));
+
+        // Then
+        assertThat(configMap.toMap()).containsKey(KEY).containsValue(VALUE);
+    }
+
+    @Test
+    void groupByShouldReturnExpectedResult() {
+        // Given
+        var configMap = new UnifiedConfigMap(Map.of(ALIAS_KEY, "", DEBUG_KEY, "", TLS_KEY, ""));
+
+        // When
+        ConfigMap groupedConfigMap = configMap.groupBy("mail.properties");
+
+        // Then
+        assertThat(groupedConfigMap.size()).isEqualTo(2);
+        assertThat(groupedConfigMap.getValue(DEBUG_KEY)).isPresent();
+        assertThat(groupedConfigMap.getValue(TLS_KEY)).isPresent();
+    }
+
+    @Test
+    void groupByShouldTransformGroupedKeys() {
+        // Given
+        var configMap = new UnifiedConfigMap(Map.of(ALIAS_KEY, "", DEBUG_KEY, "", TLS_KEY, ""));
+
+        // When
+        ConfigMap groupedConfigMap = configMap.groupBy("mail.properties", removePrefix("."));
+
+        // Then
+        assertThat(groupedConfigMap.size()).isEqualTo(2);
+        assertThat(groupedConfigMap.getValue("mail.debug")).isPresent();
+        assertThat(groupedConfigMap.getValue("mail.smtp.starttls.enable")).isPresent();
     }
 }

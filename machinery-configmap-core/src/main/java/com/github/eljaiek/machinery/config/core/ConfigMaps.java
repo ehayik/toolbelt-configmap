@@ -15,14 +15,14 @@ public final class ConfigMaps {
 
     private final ConfigEntryRepository configEntryRepository;
 
-    public ConfigMap groupBy(String namespace) {
+    public ConfigMap groupBy(String prefix) {
 
-        if (namespace == null || namespace.isBlank()) {
-            throw new IllegalArgumentException("namespace cannot be null or blank");
+        if (prefix == null || prefix.isBlank()) {
+            throw new IllegalArgumentException("prefix cannot be null or blank");
         }
 
         var delegate =
-                new UnifiedConfigMap(configEntryRepository.findAllByNamespace(namespace), this::of);
+                new UnifiedConfigMap(configEntryRepository.findAllByNamespace(prefix), this::of);
 
         return new TransientConfigMap(delegate, saveEntries());
     }

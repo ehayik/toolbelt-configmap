@@ -5,6 +5,7 @@ import static lombok.AccessLevel.PACKAGE;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.BinaryOperator;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -141,6 +142,11 @@ class TransientConfigMap implements ConfigMap {
     @Override
     public String toJson() {
         return delegate.toJson();
+    }
+
+    @Override
+    public ConfigMap groupBy(String prefix, BinaryOperator<String> keyOperator) {
+        return new TransientConfigMap(delegate.groupBy(prefix, keyOperator), saveEntries);
     }
 
     @Override

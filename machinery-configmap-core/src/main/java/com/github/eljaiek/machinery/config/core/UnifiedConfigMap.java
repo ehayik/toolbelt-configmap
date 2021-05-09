@@ -1,16 +1,19 @@
 package com.github.eljaiek.machinery.config.core;
 
 import static org.eclipse.collections.impl.collector.Collectors2.makeString;
-import static org.eclipse.collections.impl.collector.Collectors2.toMap;
+import static org.eclipse.collections.impl.collector.Collectors2.toSet;
 
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiFunction;
+import java.util.function.BinaryOperator;
 import java.util.stream.Stream;
 import lombok.NonNull;
+import org.eclipse.collections.impl.collector.Collectors2;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
+import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
 class UnifiedConfigMap implements ConfigMap {
 
@@ -25,6 +28,10 @@ class UnifiedConfigMap implements ConfigMap {
         this(UnifiedMap.newMap(), entryBuilder);
     }
 
+    UnifiedConfigMap(Map<String, String> configEntries) {
+        this(configEntries, ConfigEntry::new);
+    }
+
     UnifiedConfigMap(
             @NonNull Map<String, String> configEntries,
             @NonNull BiFunction<String, String, ConfigEntry> entryBuilder) {
@@ -32,7 +39,7 @@ class UnifiedConfigMap implements ConfigMap {
         this.configEntries =
                 configEntries.entrySet().stream()
                         .collect(
-                                toMap(
+                                Collectors2.toMap(
                                         Entry::getKey,
                                         x -> entryBuilder.apply(x.getKey(), x.getValue())));
     }
@@ -45,7 +52,7 @@ class UnifiedConfigMap implements ConfigMap {
             @NonNull Set<ConfigEntry> configEntries,
             @NonNull BiFunction<String, String, ConfigEntry> entryBuilder) {
         this.configEntries =
-                configEntries.stream().collect(toMap(ConfigEntry::key, entry -> entry));
+                configEntries.stream().collect(Collectors2.toMap(ConfigEntry::key, entry -> entry));
         this.entryBuilder = entryBuilder;
     }
 
@@ -93,7 +100,7 @@ class UnifiedConfigMap implements ConfigMap {
 
     @Override
     public Set<String> keys() {
-        return configEntries.keySet();
+        return new UnifiedSet<>(configEntries.keySet());
     }
 
     @Override
@@ -101,6 +108,21 @@ class UnifiedConfigMap implements ConfigMap {
         return stream() //
                 .map(ConfigEntry::toJson) //
                 .collect(makeString("[", ",", "]"));
+    }
+
+    @Override
+    public ConfigMap groupBy(String prefix, @NonNull BinaryOperator<String> keyOperator) {
+        Set<ConfigEntry> entries =
+                toMap().entrySet().stream()
+                        .filter(x -> x.getKey().startsWith(prefix))
+                        .map(entry -> toConfigEntry(prefix, entry, keyOperator))
+                        .collect(toSet());
+        return new UnifiedConfigMap(entries, entryBuilder);
+    }
+
+    private ConfigEntry toConfigEntry(
+            String prefix, Entry<String, String> entry, BinaryOperator<String> keyOperator) {
+        return entryBuilder.apply(keyOperator.apply(prefix, entry.getKey()), entry.getValue());
     }
 
     @Override
