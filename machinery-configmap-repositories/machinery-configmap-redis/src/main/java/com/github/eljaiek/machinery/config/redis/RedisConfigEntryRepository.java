@@ -21,14 +21,14 @@ public class RedisConfigEntryRepository implements ConfigEntryRepository {
     }
 
     @Override
-    public Map<String, String> findAllByNamespace(String namespace) {
-        return filterAllByNamespace(namespace)
+    public Map<String, String> groupBy(String prefix) {
+        return filterAllStartingWith(prefix)
                 .collect(toMap(ConfigEntryHash::getKey, ConfigEntryHash::getValue));
     }
 
-    private Stream<ConfigEntryHash> filterAllByNamespace(String namespace) {
+    private Stream<ConfigEntryHash> filterAllStartingWith(String prefix) {
         return StreamSupport.stream(configEntryHashRepository.findAll().spliterator(), false)
-                .filter(p -> p.getKey().startsWith(namespace));
+                .filter(p -> p.getKey().startsWith(prefix));
     }
 
     @Override

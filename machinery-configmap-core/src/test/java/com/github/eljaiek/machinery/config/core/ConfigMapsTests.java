@@ -26,7 +26,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class ConfigMapsTests {
 
     static final String ERROR_MESSAGE = "key cannot be null or blank.";
-    static final String NAMESPACE = "mail";
+    static final String PREFIX = "mail";
     static final String KEY = "mail.smtp.host";
     static final String VALUE = "smtp.mailtrap.io";
 
@@ -44,8 +44,8 @@ class ConfigMapsTests {
     @Test
     void groupByShouldReturnNotEmptyConfigMap() {
         // When
-        when(configEntryRepository.findAllByNamespace(NAMESPACE)).thenReturn(Map.of(KEY, VALUE));
-        var configMap = configMaps.groupBy(NAMESPACE);
+        when(configEntryRepository.groupBy(PREFIX)).thenReturn(Map.of(KEY, VALUE));
+        var configMap = configMaps.groupBy(PREFIX);
 
         // Then
         assertThat(configMap)

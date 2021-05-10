@@ -14,11 +14,11 @@ import org.springframework.test.context.ContextConfiguration;
 @DataJpaTest
 @TestMethodOrder(MethodOrderer.MethodName.class)
 @ContextConfiguration(classes = JpaModuleConfiguration.class)
-class JpaConfigEntryRepositoryTest {
+class JpaConfigEntryRepositoryTests {
 
-    final String key = "mail.server.alias";
-    final String value = "Administrator";
-    final String namespace = "mail.server";
+    static final String KEY = "mail.server.alias";
+    static final String VALUE = "Administrator";
+    static final String PREFIX = "mail.server";
 
     @Autowired TestEntityManager entityManager;
     @Autowired JpaConfigEntryRepository configEntryRepository;
@@ -26,19 +26,19 @@ class JpaConfigEntryRepositoryTest {
     @Test
     void getValueShouldNotReturnEmpty() {
         // When
-        entityManager.persist(new ConfigEntryEntity(key, value));
+        entityManager.persist(new ConfigEntryEntity(KEY, VALUE));
 
         // Then
-        assertThat(configEntryRepository.getValue(key)).isEqualTo(value);
+        assertThat(configEntryRepository.getValue(KEY)).isEqualTo(VALUE);
     }
 
     @Test
-    void findAllByNamespaceShouldNotReturnEmpty() {
+    void groupByShouldExpectedValues() {
         // Given
         var expected =
                 Map.of(
-                        key,
-                        value,
+                        KEY,
+                        VALUE,
                         "mail.server.enabled",
                         "true",
                         "mail.server.host",
@@ -52,7 +52,7 @@ class JpaConfigEntryRepositoryTest {
 
         // When
         configEntryRepository.save(expected);
-        var actual = configEntryRepository.findAllByNamespace(namespace);
+        var actual = configEntryRepository.groupBy(PREFIX);
 
         // Then
         assertThat(actual).containsExactlyInAnyOrderEntriesOf(expected);
@@ -61,9 +61,9 @@ class JpaConfigEntryRepositoryTest {
     @Test
     void saveShouldUpdateProperty() {
         // When
-        configEntryRepository.save(key, value);
-        configEntryRepository.save(key, "Admin");
-        var entity = entityManager.find(ConfigEntryEntity.class, key);
+        configEntryRepository.save(KEY, VALUE);
+        configEntryRepository.save(KEY, "Admin");
+        var entity = entityManager.find(ConfigEntryEntity.class, KEY);
 
         // Then
         assertThat(entity.getValue()).isEqualTo("Admin");

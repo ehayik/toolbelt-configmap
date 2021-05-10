@@ -11,6 +11,4 @@ public interface ConfigEntryEntityRepository extends CrudRepository<ConfigEntryE
     String getValue(@Param("key") String key);
 
     Set<ConfigEntryEntity> findAllByKeyStartingWith(String key);
-
-    void deleteAllByKeyStartingWith(String key);
 }

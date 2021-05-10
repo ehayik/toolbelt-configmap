@@ -6,7 +6,7 @@ public interface ConfigEntryRepository {
 
     String getValue(String key);
 
-    Map<String, String> findAllByNamespace(String namespace);
+    Map<String, String> groupBy(String prefix);
 
     void save(String key, String value);
 

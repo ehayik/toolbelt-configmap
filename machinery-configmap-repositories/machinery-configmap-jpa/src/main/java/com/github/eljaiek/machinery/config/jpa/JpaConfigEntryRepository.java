@@ -20,8 +20,8 @@ public class JpaConfigEntryRepository implements ConfigEntryRepository {
     }
 
     @Override
-    public Map<String, String> findAllByNamespace(String namespace) {
-        return delegate.findAllByKeyStartingWith(namespace).stream()
+    public Map<String, String> groupBy(String prefix) {
+        return delegate.findAllByKeyStartingWith(prefix).stream()
                 .collect(toMap(ConfigEntryEntity::getKey, ConfigEntryEntity::getValue));
     }
 

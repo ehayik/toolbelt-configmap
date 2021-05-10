@@ -21,8 +21,7 @@ public final class ConfigMaps {
             throw new IllegalArgumentException("prefix cannot be null or blank");
         }
 
-        var delegate =
-                new UnifiedConfigMap(configEntryRepository.findAllByNamespace(prefix), this::of);
+        var delegate = new UnifiedConfigMap(configEntryRepository.groupBy(prefix), this::of);
 
         return new TransientConfigMap(delegate, saveEntries());
     }
