@@ -17,7 +17,7 @@ import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 @TestMethodOrder(MethodName.class)
-class ConfigEntryTest {
+class ConfigEntryTests {
 
     static final String KEY = "time.unit";
     static final String VALUE = DAYS.toString();
