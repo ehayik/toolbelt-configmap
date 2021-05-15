@@ -124,3 +124,7 @@ file("machinery-configmap-repositories").eachDir { x ->
         }
     }
 }
+
+task publishAll(type: GradleBuild) {
+    tasks = [ 'publish' ]
+}
