@@ -3,14 +3,14 @@ package com.github.eljaiek.machinery.config.jpa;
 import static org.eclipse.collections.impl.collector.Collectors2.toList;
 import static org.eclipse.collections.impl.collector.Collectors2.toMap;
 
-import com.github.eljaiek.machinery.config.core.ConfigEntryRepository;
+import com.github.eljaiek.machinery.config.core.ConfigSource;
 import java.util.List;
 import java.util.Map;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class JpaConfigEntryRepository implements ConfigEntryRepository {
+public class JpaConfigSource implements ConfigSource {
 
     private final ConfigEntryEntityRepository delegate;
 

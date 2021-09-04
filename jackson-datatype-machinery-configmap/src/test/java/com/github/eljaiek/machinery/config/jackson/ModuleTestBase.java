@@ -3,8 +3,8 @@ package com.github.eljaiek.machinery.config.jackson;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.cfg.MapperBuilder;
 import com.fasterxml.jackson.databind.json.JsonMapper;
-import com.github.eljaiek.machinery.config.core.ConfigEntryRepository;
 import com.github.eljaiek.machinery.config.core.ConfigMaps;
+import com.github.eljaiek.machinery.config.core.ConfigSource;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -12,7 +12,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 abstract class ModuleTestBase {
 
-    @Mock ConfigEntryRepository configEntryRepository;
+    @Mock ConfigSource configEntryRepository;
 
     protected ObjectMapper mapperWithModule() {
         return mapperBuilder().build();

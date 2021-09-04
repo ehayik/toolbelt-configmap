@@ -3,7 +3,7 @@ package com.github.eljaiek.machinery.config.redis;
 import static org.eclipse.collections.impl.collector.Collectors2.toMap;
 import static org.eclipse.collections.impl.collector.Collectors2.toSet;
 
-import com.github.eljaiek.machinery.config.core.ConfigEntryRepository;
+import com.github.eljaiek.machinery.config.core.ConfigSource;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -11,7 +11,7 @@ import java.util.stream.StreamSupport;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class RedisConfigEntryRepository implements ConfigEntryRepository {
+public class RedisConfigSource implements ConfigSource {
 
     private final ConfigEntryHashRepository configEntryHashRepository;
 

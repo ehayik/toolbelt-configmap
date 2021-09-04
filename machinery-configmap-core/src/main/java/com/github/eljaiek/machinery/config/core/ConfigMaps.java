@@ -13,7 +13,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public final class ConfigMaps {
 
-    private final ConfigEntryRepository configEntryRepository;
+    private final ConfigSource configSource;
 
     public ConfigMap groupBy(String prefix) {
 
@@ -21,15 +21,13 @@ public final class ConfigMaps {
             throw new IllegalArgumentException("prefix cannot be null or blank");
         }
 
-        var delegate = new UnifiedConfigMap(configEntryRepository.groupBy(prefix), this::of);
-
+        var delegate = new UnifiedConfigMap(configSource.groupBy(prefix), this::of);
         return new TransientConfigMap(delegate, saveEntries());
     }
 
     private Consumer<Set<ConfigEntry>> saveEntries() {
         return x ->
-                configEntryRepository.save(
-                        x.stream().collect(toMap(ConfigEntry::key, ConfigEntry::asText)));
+                configSource.save(x.stream().collect(toMap(ConfigEntry::key, ConfigEntry::asText)));
     }
 
     public ConfigMap of() {
@@ -37,8 +35,7 @@ public final class ConfigMaps {
     }
 
     public ConfigEntry of(String key) {
-        return new ConfigEntry(
-                key, configEntryRepository.getValue(key), configEntryRepository::save);
+        return new ConfigEntry(key, configSource.getValue(key), configSource::save);
     }
 
     public ConfigMap of(@NonNull Map<String, String> configEntries) {
@@ -46,7 +43,7 @@ public final class ConfigMaps {
     }
 
     private ConfigEntry of(Entry<String, String> entry) {
-        return new ConfigEntry(entry.getKey(), entry.getValue(), configEntryRepository::save);
+        return new ConfigEntry(entry.getKey(), entry.getValue(), configSource::save);
     }
 
     public ConfigMap of(@NonNull Set<ConfigEntry> entries) {
@@ -55,6 +52,6 @@ public final class ConfigMaps {
     }
 
     public ConfigEntry of(String key, String value) {
-        return new ConfigEntry(key, value, configEntryRepository::save);
+        return new ConfigEntry(key, value, configSource::save);
     }
 }

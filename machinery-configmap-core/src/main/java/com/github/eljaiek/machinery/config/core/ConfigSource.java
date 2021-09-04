@@ -2,7 +2,7 @@ package com.github.eljaiek.machinery.config.core;
 
 import java.util.Map;
 
-public interface ConfigEntryRepository {
+public interface ConfigSource {
 
     String getValue(String key);
 

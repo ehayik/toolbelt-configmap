@@ -31,7 +31,7 @@ class ConfigMapsTests {
     static final String VALUE = "smtp.mailtrap.io";
 
     @InjectMocks ConfigMaps configMaps;
-    @Mock ConfigEntryRepository configEntryRepository;
+    @Mock ConfigSource configEntryRepository;
     InstanceOfAssertFactory<ConfigMap, ObjectAssert<ConfigMap>> configMapAssertFactory;
 
     @BeforeEach

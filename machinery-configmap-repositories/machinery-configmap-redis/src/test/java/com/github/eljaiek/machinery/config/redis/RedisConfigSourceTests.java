@@ -5,7 +5,7 @@ import static org.springframework.test.annotation.DirtiesContext.ClassMode.BEFOR
 
 import java.util.Map;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.MethodOrderer.MethodName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,15 +16,15 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
 @DirtiesContext(classMode = BEFORE_CLASS)
-@TestMethodOrder(MethodOrderer.MethodName.class)
+@TestMethodOrder(MethodName.class)
 @ContextConfiguration(classes = RedisModuleTestConfiguration.class)
-class RedisConfigEntryRepositoryTests {
+class RedisConfigSourceTests {
 
     static final String KEY = "mail.server.alias";
     static final String VALUE = "Administrator";
     static final String PREFIX = "mail.server";
 
-    @Autowired RedisConfigEntryRepository configEntryRepository;
+    @Autowired RedisConfigSource redisConfigSource;
     @Autowired ConfigEntryHashRepository configEntryHashRepository;
 
     @AfterEach
@@ -38,7 +38,7 @@ class RedisConfigEntryRepositoryTests {
         configEntryHashRepository.save(new ConfigEntryHash(KEY, VALUE));
 
         // Then
-        assertThat(configEntryRepository.getValue(KEY)).isEqualTo(VALUE);
+        assertThat(redisConfigSource.getValue(KEY)).isEqualTo(VALUE);
     }
 
     @Test
@@ -60,9 +60,9 @@ class RedisConfigEntryRepositoryTests {
                         "admin123");
 
         // When
-        configEntryRepository.save(expected);
-        configEntryRepository.save("server.url", "https://localhost");
-        var actual = configEntryRepository.groupBy(PREFIX);
+        redisConfigSource.save(expected);
+        redisConfigSource.save("server.url", "https://localhost");
+        var actual = redisConfigSource.groupBy(PREFIX);
 
         // Then
         assertThat(actual).containsExactlyInAnyOrderEntriesOf(expected);
@@ -71,8 +71,8 @@ class RedisConfigEntryRepositoryTests {
     @Test
     void saveShouldUpdateValueOfExistingProperty() {
         // When
-        configEntryRepository.save(KEY, VALUE);
-        configEntryRepository.save(KEY, "Admin");
+        redisConfigSource.save(KEY, VALUE);
+        redisConfigSource.save(KEY, "Admin");
         var entity = configEntryHashRepository.findById(KEY).orElseThrow();
 
         // Then

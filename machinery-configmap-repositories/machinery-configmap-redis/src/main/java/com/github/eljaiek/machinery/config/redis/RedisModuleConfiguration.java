@@ -1,6 +1,6 @@
 package com.github.eljaiek.machinery.config.redis;
 
-import com.github.eljaiek.machinery.config.core.ConfigEntryRepository;
+import com.github.eljaiek.machinery.config.core.ConfigSource;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,8 +12,7 @@ class RedisModuleConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    ConfigEntryRepository configEntryRepository(
-            ConfigEntryHashRepository configEntryHashRepository) {
-        return new RedisConfigEntryRepository(configEntryHashRepository);
+    ConfigSource redisConfigSource(ConfigEntryHashRepository configEntryHashRepository) {
+        return new RedisConfigSource(configEntryHashRepository);
     }
 }

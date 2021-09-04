@@ -1,6 +1,6 @@
 package com.github.eljaiek.machinery.config.jpa;
 
-import com.github.eljaiek.machinery.config.core.ConfigEntryRepository;
+import com.github.eljaiek.machinery.config.core.ConfigSource;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
@@ -16,8 +16,7 @@ public class JpaModuleConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    ConfigEntryRepository configEntryRepository(
-            ConfigEntryEntityRepository configEntryEntityRepository) {
-        return new JpaConfigEntryRepository(configEntryEntityRepository);
+    ConfigSource jpaConfigSource(ConfigEntryEntityRepository configEntryEntityRepository) {
+        return new JpaConfigSource(configEntryEntityRepository);
     }
 }

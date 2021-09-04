@@ -1,8 +1,8 @@
 package com.github.eljaiek.machinery.config;
 
 import com.fasterxml.jackson.databind.Module;
-import com.github.eljaiek.machinery.config.core.ConfigEntryRepository;
 import com.github.eljaiek.machinery.config.core.ConfigMaps;
+import com.github.eljaiek.machinery.config.core.ConfigSource;
 import com.github.eljaiek.machinery.config.jackson.ConfigMapModule;
 import com.github.eljaiek.machinery.config.jpa.JpaModuleConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -17,8 +17,8 @@ class MachineryConfigMapConfiguration {
 
     @Bean
     @SuppressWarnings("unused")
-    ConfigMaps configMaps(ConfigEntryRepository configEntryRepository) {
-        return new ConfigMaps(configEntryRepository);
+    ConfigMaps configMaps(ConfigSource configSource) {
+        return new ConfigMaps(configSource);
     }
 
     @Configuration
@@ -33,7 +33,7 @@ class MachineryConfigMapConfiguration {
 
     @ConditionalOnWebApplication
     @ConditionalOnClass(name = "com.github.eljaiek.machinery.config.jackson.ConfigMapModule")
-    static class InjectJacksonDatatypeModule {
+    static class InjectJacksonDataTypeModule {
 
         @Bean
         Module configMapModule(ConfigMaps configMaps) {

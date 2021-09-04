@@ -14,14 +14,14 @@ import org.springframework.test.context.ContextConfiguration;
 @DataJpaTest
 @TestMethodOrder(MethodOrderer.MethodName.class)
 @ContextConfiguration(classes = JpaModuleConfiguration.class)
-class JpaConfigEntryRepositoryTests {
+class JpaConfigSourceTests {
 
     static final String KEY = "mail.server.alias";
     static final String VALUE = "Administrator";
     static final String PREFIX = "mail.server";
 
     @Autowired TestEntityManager entityManager;
-    @Autowired JpaConfigEntryRepository configEntryRepository;
+    @Autowired JpaConfigSource jpaConfigSource;
 
     @Test
     void getValueShouldNotReturnEmpty() {
@@ -29,7 +29,7 @@ class JpaConfigEntryRepositoryTests {
         entityManager.persist(new ConfigEntryEntity(KEY, VALUE));
 
         // Then
-        assertThat(configEntryRepository.getValue(KEY)).isEqualTo(VALUE);
+        assertThat(jpaConfigSource.getValue(KEY)).isEqualTo(VALUE);
     }
 
     @Test
@@ -51,8 +51,8 @@ class JpaConfigEntryRepositoryTests {
                         "admin123");
 
         // When
-        configEntryRepository.save(expected);
-        var actual = configEntryRepository.groupBy(PREFIX);
+        jpaConfigSource.save(expected);
+        var actual = jpaConfigSource.groupBy(PREFIX);
 
         // Then
         assertThat(actual).containsExactlyInAnyOrderEntriesOf(expected);
@@ -61,8 +61,8 @@ class JpaConfigEntryRepositoryTests {
     @Test
     void saveShouldUpdateProperty() {
         // When
-        configEntryRepository.save(KEY, VALUE);
-        configEntryRepository.save(KEY, "Admin");
+        jpaConfigSource.save(KEY, VALUE);
+        jpaConfigSource.save(KEY, "Admin");
         var entity = entityManager.find(ConfigEntryEntity.class, KEY);
 
         // Then
