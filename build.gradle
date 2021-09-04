@@ -111,7 +111,7 @@ subprojects {
     }
 }
 
-file("machinery-configmap-repositories").eachDir { x ->
+file("machinery-configmap-sources").eachDir { x ->
     project(":${x.name}") {
         dependencies {
             implementation project(':machinery-configmap-core')
