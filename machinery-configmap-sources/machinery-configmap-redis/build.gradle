@@ -3,3 +3,11 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     testImplementation 'it.ozimov:embedded-redis:0.7.2'
 }
+
+jacocoTestReport {
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: ["com.github.eljaiek.machinery.config.redis.RedisModuleConfiguration"])
+        }))
+    }
+}

@@ -4,3 +4,11 @@ dependencies {
     implementation 'org.hibernate:hibernate-core'
     testRuntimeOnly 'com.h2database:h2'
 }
+
+jacocoTestReport {
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: ["com.github.eljaiek.machinery.config.jpa.JpaModuleConfiguration"])
+        }))
+    }
+}
