@@ -12,7 +12,11 @@ dependencies {
 jacocoTestReport {
     afterEvaluate {
         classDirectories.setFrom(files(classDirectories.files.collect {
-            fileTree(dir: it, exclude: ["com.github.eljaiek.machinery.config.MachineryConfigMapConfiguration"])
+            fileTree(dir: it, exclude:
+                    [
+                            "**/MachineryConfigMapConfiguration\$*.*",
+                            "**/MachineryConfigMapConfiguration.*"
+                    ])
         }))
     }
 }
