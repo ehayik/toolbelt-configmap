@@ -8,15 +8,3 @@ dependencies {
     testImplementation "org.assertj:assertj-core:${assertjCore}"
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
-
-jacocoTestReport {
-    afterEvaluate {
-        classDirectories.setFrom(files(classDirectories.files.collect {
-            fileTree(dir: it, exclude:
-                    [
-                            "**/MachineryConfigMapConfiguration\$*.*",
-                            "**/MachineryConfigMapConfiguration.*"
-                    ])
-        }))
-    }
-}
