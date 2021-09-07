@@ -1,11 +1,5 @@
 package com.github.eljaiek.machinery.config.core;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.mockito.Mockito.when;
-
-import java.util.Map;
-import java.util.Set;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.api.InstanceOfAssertFactory;
 import org.assertj.core.api.ObjectAssert;
@@ -20,6 +14,14 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.Map;
+import java.util.Set;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.assertThatNullPointerException;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @TestMethodOrder(MethodName.class)
@@ -79,6 +81,17 @@ class ConfigMapsTests {
     }
 
     @Test
+    void ofShouldThrowNullPointerExceptionWhenTheGivenConfigEntriesSetIsNull() {
+        // Given
+        Set<ConfigEntry> entries = null;
+
+        // Then
+        assertThatNullPointerException()
+                .isThrownBy(() -> configMaps.of(entries))
+                .withMessage("entries is marked non-null but is null");
+    }
+
+    @Test
     void ofShouldReturnConfigMapContainingGivenMapEntries() {
         // When
         var configMap = configMaps.of(Map.of(KEY, VALUE));
@@ -89,6 +102,17 @@ class ConfigMapsTests {
                 .extracting("delegate", configMapAssertFactory)
                 .isInstanceOf(UnifiedConfigMap.class);
         assertThat(configMap.isEmpty()).isFalse();
+    }
+
+    @Test
+    void ofShouldThrowNullPointerExceptionWhenTheGivenEntriesMapIsNull() {
+        // Given
+        Map<String, String> entries = null;
+
+        // Then
+        assertThatNullPointerException()
+                .isThrownBy(() -> configMaps.of(entries))
+                .withMessage("configEntries is marked non-null but is null");
     }
 
     @Test
