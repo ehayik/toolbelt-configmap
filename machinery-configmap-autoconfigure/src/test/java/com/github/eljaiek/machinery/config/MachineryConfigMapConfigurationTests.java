@@ -37,7 +37,8 @@ class MachineryConfigMapConfigurationTests {
     void configMapsShouldReturnExpectedInstance() {
         // When
         ConfigMaps configMaps = machineryConfigMapConfiguration.configMaps(expectedSource);
-        ConfigSource actualSource = (ConfigSource) ReflectionTestUtils.getField(configMaps, "configSource");
+        ConfigSource actualSource =
+                (ConfigSource) ReflectionTestUtils.getField(configMaps, "configSource");
 
         // Then
         assertThat(actualSource).isEqualTo(expectedSource);
@@ -50,7 +51,8 @@ class MachineryConfigMapConfigurationTests {
 
         // When
         Module configMapModule = config.configMapModule(expectedConfigMaps);
-        ConfigMaps actualConfigMaps = (ConfigMaps) ReflectionTestUtils.getField(configMapModule, "configMaps");
+        ConfigMaps actualConfigMaps =
+                (ConfigMaps) ReflectionTestUtils.getField(configMapModule, "configMaps");
 
         // Then
         assertThat(actualConfigMaps).isEqualTo(expectedConfigMaps);
