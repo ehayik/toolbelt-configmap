@@ -16,6 +16,7 @@ import lombok.ToString;
 import lombok.With;
 import org.eclipse.collections.impl.collector.Collectors2;
 
+/** Represents a property composed by a unique key and its value. */
 @EqualsAndHashCode(of = "key")
 @ToString(of = {"key", "value"})
 public class ConfigEntry {
