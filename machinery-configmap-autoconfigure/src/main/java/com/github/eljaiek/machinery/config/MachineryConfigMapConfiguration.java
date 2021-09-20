@@ -3,14 +3,14 @@ package com.github.eljaiek.machinery.config;
 import com.fasterxml.jackson.databind.Module;
 import com.github.eljaiek.machinery.config.core.ConfigMaps;
 import com.github.eljaiek.machinery.config.core.ConfigSource;
+import com.github.eljaiek.machinery.config.core.SystemConfigSource;
 import com.github.eljaiek.machinery.config.jackson.ConfigMapModule;
-import com.github.eljaiek.machinery.config.jpa.JpaModuleConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 
 @Configuration
 class MachineryConfigMapConfiguration {
@@ -21,8 +21,14 @@ class MachineryConfigMapConfiguration {
         return new ConfigMaps(configSource);
     }
 
+    @Bean
+    @ConditionalOnMissingBean
+    ConfigSource configSource() {
+        return new SystemConfigSource();
+    }
+
     @Configuration
-    @Import(JpaModuleConfiguration.class)
+    @ComponentScan("com.github.eljaiek.machinery.config.jpa")
     @ConditionalOnClass(name = "com.github.eljaiek.machinery.config.jpa.JpaModuleConfiguration")
     static class EnableJpaModule {}
 
