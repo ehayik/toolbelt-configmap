@@ -5,6 +5,7 @@ import static org.eclipse.collections.impl.collector.Collectors2.toSet;
 
 import com.github.eljaiek.machinery.config.core.ConfigSource;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -40,8 +41,12 @@ public class RedisConfigSource implements ConfigSource {
     public void save(Map<String, String> configEntries) {
         Set<ConfigEntryHash> propertyHashes =
                 configEntries.entrySet().stream()
-                        .map(x -> new ConfigEntryHash(x.getKey(), x.getValue()))
+                        .map(RedisConfigSource::asConfigEntryHash)
                         .collect(toSet());
         configEntryHashRepository.saveAll(propertyHashes);
+    }
+
+    private static ConfigEntryHash asConfigEntryHash(Entry<String, String> entry) {
+        return new ConfigEntryHash(entry.getKey(), entry.getValue());
     }
 }
