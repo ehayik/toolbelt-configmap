@@ -1,9 +1,9 @@
 package com.github.eljaiek.machinery.config.core;
 
+import static java.util.stream.Collectors.toMap;
+
 import java.util.Map;
 import java.util.Map.Entry;
-
-import static java.util.stream.Collectors.toMap;
 
 /** A ConfigSource for reading and updating {@link System} properties. */
 public class SystemConfigSource implements ConfigSource {

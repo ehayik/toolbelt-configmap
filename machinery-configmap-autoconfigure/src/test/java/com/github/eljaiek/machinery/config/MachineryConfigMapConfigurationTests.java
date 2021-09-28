@@ -7,18 +7,20 @@ import com.fasterxml.jackson.databind.Module;
 import com.github.eljaiek.machinery.config.MachineryConfigMapConfiguration.InjectJacksonDataTypeModule;
 import com.github.eljaiek.machinery.config.core.ConfigMaps;
 import com.github.eljaiek.machinery.config.core.ConfigSource;
-import org.junit.jupiter.api.MethodOrderer;
+import com.github.eljaiek.machinery.config.core.SystemConfigSource;
+import org.junit.jupiter.api.MethodOrderer.MethodName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
-@DataJpaTest
-@TestMethodOrder(MethodOrderer.MethodName.class)
+@ExtendWith(SpringExtension.class)
+@TestMethodOrder(MethodName.class)
 @ContextConfiguration(classes = MachineryConfigMapConfiguration.class)
 class MachineryConfigMapConfigurationTests {
 
@@ -41,7 +43,7 @@ class MachineryConfigMapConfigurationTests {
                 (ConfigSource) ReflectionTestUtils.getField(configMaps, "configSource");
 
         // Then
-        assertThat(actualSource).isEqualTo(expectedSource);
+        assertThat(actualSource).isInstanceOf(SystemConfigSource.class).isEqualTo(expectedSource);
     }
 
     @Test
