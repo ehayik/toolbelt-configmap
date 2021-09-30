@@ -4,32 +4,39 @@ import static lombok.AccessLevel.PACKAGE;
 import static lombok.AccessLevel.PROTECTED;
 
 import java.io.Serializable;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import java.util.Objects;
+import javax.persistence.*;
+import lombok.*;
+import org.hibernate.Hibernate;
 
-@Data
 @Entity
+@Getter
+@Setter
 @ToString
 @NoArgsConstructor(access = PROTECTED)
 @AllArgsConstructor(access = PACKAGE)
-@EqualsAndHashCode(of = "key")
-@Table(name = "mch_config_entries")
+@Table(name = "ts_configmap")
 public class ConfigEntryEntity implements Serializable {
 
     @Id
     @Basic(optional = false)
-    @Column(name = "mch_config_entry_key", nullable = false, length = 500)
+    @Column(name = "ts_configmap_key", nullable = false, length = 500)
     private String key;
 
     @Basic(optional = false)
-    @Column(name = "mch_config_entry_value", nullable = false, length = 2500)
+    @Column(name = "ts_configmap_value", nullable = false, length = 2500)
     private String value;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        ConfigEntryEntity that = (ConfigEntryEntity) o;
+        return Objects.equals(key, that.key);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(key);
+    }
 }
