@@ -26,7 +26,7 @@ compileJava.dependsOn 'googleJavaFormat'
 
 sonarqube {
     properties {
-        property "sonar.projectKey", "eljaiek_toolbelt-configmap"
+        property "sonar.projectKey", "eljaiek_machinery-configmap"
         property "sonar.organization", "eljaiek"
         property "sonar.host.url", "https://sonarcloud.io"
     }
@@ -50,7 +50,7 @@ allprojects {
 
 subprojects {
 
-    group = 'com.github.eljaiek.toolbelt'
+    group = 'com.github.ehayik.toolbelt'
     version = rootProject.version
 
     apply plugin: 'java-library'
