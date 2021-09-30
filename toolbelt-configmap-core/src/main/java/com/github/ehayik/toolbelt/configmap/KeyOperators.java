@@ -13,11 +13,7 @@ public class KeyOperators {
         return (prefix, key) -> key;
     }
 
-    public static BinaryOperator<String> removePrefix() {
-        return removePrefix("");
-    }
-
-    public static BinaryOperator<String> removePrefix(@NonNull String endInclusive) {
-        return (prefix, key) -> key.replace(prefix + endInclusive, "");
+    public static BinaryOperator<String> removeNamespace(@NonNull String endInclusive) {
+        return (namespace, key) -> key.replace(namespace + endInclusive, "");
     }
 }

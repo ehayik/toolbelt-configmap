@@ -374,7 +374,7 @@ class UnifiedConfigMapTests {
 
         // When
         ConfigMap groupedConfigMap =
-                configMap.groupBy("mail.properties", KeyOperators.removePrefix("."));
+                configMap.groupBy("mail.properties", KeyOperators.removeNamespace("."));
 
         // Then
         assertThat(groupedConfigMap.size()).isEqualTo(2);
