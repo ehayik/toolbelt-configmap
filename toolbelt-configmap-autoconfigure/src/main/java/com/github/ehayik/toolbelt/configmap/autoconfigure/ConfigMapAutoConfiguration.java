@@ -5,6 +5,7 @@ import com.github.ehayik.toolbelt.configmap.ConfigMaps;
 import com.github.ehayik.toolbelt.configmap.ConfigSource;
 import com.github.ehayik.toolbelt.configmap.SystemConfigSource;
 import com.github.ehayik.toolbelt.configmap.jackson.ConfigMapModule;
+import lombok.Generated;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
@@ -27,12 +28,14 @@ class ConfigMapAutoConfiguration {
         return new SystemConfigSource();
     }
 
+    @Generated
     @Configuration
     @ComponentScan("com.github.ehayik.toolbelt.configmap.sources.jpa")
     @ConditionalOnClass(
             name = "com.github.ehayik.toolbelt.configmap.sources.jpa.JpaModuleConfiguration")
     static class EnableJpaModule {}
 
+    @Generated
     @Configuration
     @ComponentScan("com.github.ehayik.toolbelt.configmap.sources.redis")
     @ConditionalOnClass(

@@ -18,6 +18,10 @@ plugins {
 
 project.version = scmVersion.version
 
+jacoco {
+    toolVersion = "0.8.2"
+}
+
 googleJavaFormat {
     options style: 'AOSP'
 }
