@@ -1,5 +1,10 @@
 package com.github.ehayik.toolbelt.configmap.jackson;
 
+import static java.lang.String.format;
+import static java.util.concurrent.TimeUnit.DAYS;
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.when;
+
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.ObjectCodec;
@@ -7,6 +12,9 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.JsonNodeType;
 import com.github.ehayik.toolbelt.configmap.ConfigEntry;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.MethodOrderer.MethodName;
 import org.junit.jupiter.api.Test;
@@ -14,11 +22,6 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import static java.lang.String.format;
-import static java.util.concurrent.TimeUnit.DAYS;
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @TestMethodOrder(MethodName.class)
@@ -99,6 +102,26 @@ class ConfigEntryDeserializerTests extends ModuleTestBase {
 
         // Then
         assertThat(deserializer.deserialize(jsonParser, context)).isNull();
+    }
+
+    @Test
+    @SneakyThrows
+    @SuppressWarnings("unchecked")
+    void deserializeShouldReturnNullWhenConfigEntryKeyIsInvalid() {
+        // Given
+        var deserializer = new ConfigEntryDeserializer(configMaps());
+
+        // When
+        mockJsonParser();
+        when(jsonNode.isObject()).thenReturn(true);
+        when(jsonNode.fields()).thenReturn(newJsonNodeIterator(), newJsonNodeIterator());
+
+        // Then
+        assertThat(deserializer.deserialize(jsonParser, context)).isNull();
+    }
+
+    private Iterator<Entry<String, JsonNode>> newJsonNodeIterator() {
+        return Map.of("", jsonNode).entrySet().iterator();
     }
 
     @SneakyThrows
