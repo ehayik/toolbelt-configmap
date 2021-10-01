@@ -18,6 +18,10 @@ plugins {
 
 project.version = scmVersion.version
 
+jacoco {
+    toolVersion = "0.8.2"
+}
+
 googleJavaFormat {
     options style: 'AOSP'
 }
@@ -50,7 +54,7 @@ allprojects {
 
 subprojects {
 
-    group = 'com.github.eljaiek.machinery'
+    group = 'com.github.ehayik.toolbelt'
     version = rootProject.version
 
     apply plugin: 'java-library'
@@ -111,16 +115,28 @@ subprojects {
     }
 }
 
-file("machinery-configmap-sources").eachDir { x ->
+file("toolbelt-configmap-sources").eachDir { x ->
     project(":${x.name}") {
         dependencies {
-            implementation project(':machinery-configmap-core')
+            implementation project(':toolbelt-configmap-core')
             implementation "org.eclipse.collections:eclipse-collections:${eclipseCollectionsApi}"
             implementation "org.eclipse.collections:eclipse-collections-api:${eclipseCollectionsApi}"
 
             testImplementation 'org.junit.jupiter:junit-jupiter'
             testImplementation "org.assertj:assertj-core:${assertjCore}"
             testImplementation 'org.springframework.boot:spring-boot-starter-test'
+        }
+    }
+}
+
+file("toolbelt-configmap-starters").eachDir { x ->
+    project(":${x.name}") {
+        dependencies {
+            implementation 'org.springframework.boot:spring-boot-starter'
+            api project(':toolbelt-configmap-core')
+            api (project(':toolbelt-configmap-autoconfigure')) {
+                exclude module: 'jackson-datatype-toolbelt-configmap'
+            }
         }
     }
 }

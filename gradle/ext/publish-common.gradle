@@ -15,9 +15,9 @@ def pom(it) {
     }
 
     it.scm {
-        connection = 'scm:git:git://github.com/eljaiek/machinery-configmap.git'
-        developerConnection = 'scm:git:git@github.com:eljaiek/machinery-configmap.git'
-        url = 'https://github.com/eljaiek/machinery-configmap'
+        connection = 'scm:git:git://github.com/ehayik/toolset-configmap.git'
+        developerConnection = 'scm:git:git@github.com:ehayik/toolset-configmap.git'
+        url = 'https://github.com/ehayik/toolset-configmap'
     }
 }
 

@@ -1,0 +1,8 @@
+dependencies {
+    implementation project(':toolbelt-configmap-core')
+    implementation project(':jackson-datatype-toolbelt-configmap')
+    implementation 'org.springframework.boot:spring-boot-starter'
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testImplementation "org.assertj:assertj-core:${assertjCore}"
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}

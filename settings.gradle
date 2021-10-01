@@ -1,17 +1,17 @@
 
-rootProject.name = 'machinery-configmap'
+rootProject.name = 'toolbelt-configmap'
 
-include 'machinery-configmap-core'
-include 'machinery-configmap-autoconfigure'
-include 'jackson-datatype-machinery-configmap'
+include 'toolbelt-configmap-core'
+include 'toolbelt-configmap-autoconfigure'
+include 'jackson-datatype-toolbelt-configmap'
 
 /*
 * Includes every sub-project from listed directories
-* rename them to be :machinery-config-jpa instead of 
-* machinery-config-sources:machinery-config-jpa
+* rename them to be :toolbelt-config-jpa instead of
+* toolbelt-config-sources:toolbelt-config-jpa
 **/
-[file("machinery-configmap-sources"),
- file("machinery-configmap-starters")].each {it ->
+[file("toolbelt-configmap-sources"),
+ file("toolbelt-configmap-starters")].each {it ->
     it.eachDir { x ->
         include x.name
         project(":${x.name}").projectDir = x

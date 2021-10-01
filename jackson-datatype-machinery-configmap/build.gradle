@@ -1,9 +1,0 @@
-
-dependencies {
-    api(project(':machinery-configmap-core'))
-    api 'com.fasterxml.jackson.core:jackson-databind'
-    testImplementation 'org.junit.jupiter:junit-jupiter'
-    testImplementation "org.mockito:mockito-core:${mockitoCore}"
-    testImplementation "org.assertj:assertj-core:${assertjCore}"
-    testImplementation "org.mockito:mockito-junit-jupiter:${mockitoCore}"
-}
