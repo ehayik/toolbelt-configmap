@@ -1,18 +1,37 @@
 package com.github.ehayik.toolbelt.configmap.jackson;
 
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.ObjectCodec;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.JsonNodeType;
+import com.github.ehayik.toolbelt.configmap.ConfigEntry;
+import lombok.SneakyThrows;
+import org.junit.jupiter.api.MethodOrderer.MethodName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
 import static java.lang.String.format;
 import static java.util.concurrent.TimeUnit.DAYS;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.when;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.github.ehayik.toolbelt.configmap.ConfigEntry;
-import org.junit.jupiter.api.Test;
-
+@ExtendWith(MockitoExtension.class)
+@TestMethodOrder(MethodName.class)
 class ConfigEntryDeserializerTests extends ModuleTestBase {
 
     static final String KEY = "time.unit";
     static final String VALUE = DAYS.toString();
+
+    @Mock JsonParser jsonParser;
+    @Mock ObjectCodec objectCodec;
+    @Mock JsonNode jsonNode;
+    @Mock JsonNodeType jsonNodeType;
+    @Mock DeserializationContext context;
 
     @Test
     void deserialize() throws JsonProcessingException {
@@ -52,5 +71,46 @@ class ConfigEntryDeserializerTests extends ModuleTestBase {
                 .hasMessageContaining(
                         "`ARRAY` out of START_OBJECT token\n"
                                 + " at [Source: (String)\"[{\"\":\"DAYS\"}]\"; line: 1, column: 13]");
+    }
+
+    @Test
+    @SneakyThrows
+    void deserializeShouldReturnNullWhenJsonNodeIsNotAnObject() {
+        // Given
+        var deserializer = new ConfigEntryDeserializer(configMaps());
+
+        // When
+        mockJsonParser();
+        when(jsonNode.getNodeType()).thenReturn(jsonNodeType);
+
+        // Then
+        assertThat(deserializer.deserialize(jsonParser, context)).isNull();
+    }
+
+    @Test
+    @SneakyThrows
+    void deserializeShouldReturnNullWhenJsoNodeFieldsIsNull() {
+        // Given
+        var deserializer = new ConfigEntryDeserializer(configMaps());
+
+        // When
+        mockJsonParser();
+        when(jsonNode.isObject()).thenReturn(true);
+
+        // Then
+        assertThat(deserializer.deserialize(jsonParser, context)).isNull();
+    }
+
+    @SneakyThrows
+    private void mockJsonParser() {
+        when(jsonParser.getCodec()).thenReturn(objectCodec);
+        when(objectCodec.readTree(jsonParser)).thenReturn(jsonNode);
+    }
+
+    @Test
+    void newShouldThrowNullPointerException() {
+        assertThatNullPointerException()
+                .isThrownBy(() -> new ConfigEntryDeserializer(null))
+                .withMessage("configMaps is marked non-null but is null");
     }
 }
